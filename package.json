@@ -1,0 +1,64 @@
+{
+  "name": "contentstack-content-store-mongodb",
+  "version": "1.0.0",
+  "description": "Listen to contentstack webhook and triggers sync manager.",
+  "main": "./dist",
+  "homepage": "https://github.com/contentstack/contentstack-content-store-mongodb#readme",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "keywords": [
+    "Contentstack",
+    "webhook",
+    "listener",
+    "utility",
+    "connector"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build-ts": "npm run clean && tsc",
+    "watch-ts": "npm run clean && tsc -w",
+    "test": "jest --coverage",
+    "compile": "tsc",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/contentstack/contentstack-content-store-mongodb"
+  },
+  "bugs": {
+    "url": "https://github.com/contentstack/contentstack-content-store-mongodb/issues",
+    "email": "support@contentstack.com"
+  },
+  "author": "Contentstack LLC <support@contentstack.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/rimraf": "^2.0.2",
+    "bluebird": "3.5.1",
+    "lodash": "^4.17.11",
+    "mkdirp": "^0.5.1",
+    "mongodb": "^3.1.6",
+    "mustache": "^3.0.0",
+    "path-to-regexp": "^2.1.0",
+    "request": "^2.83.0",
+    "rimraf": "2.6.2",
+    "sift": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.2",
+    "chai": "^4.1.2",
+    "debug": "^4.1.0",
+    "jest": "^23.6.0",
+    "mocha": "^4.1.0",
+    "mochawesome": "^3.0.3",
+    "ncp": "^2.0.0",
+    "sinon": "^6.3.5",
+    "rimraf": "^2.6.2",
+    "supertest": "^3.3.0",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.2"
+  }
+}
