@@ -1,19 +1,25 @@
+/*!
+* contentstack-sync-asset-store-filesystem
+* copyright (c) Contentstack LLC
+* MIT Licensed
+*/
+"use strict"
 import { has, findIndex, uniq, sortBy } from 'lodash';
 import { get } from '../config';
 import * as Mustache from 'mustache'
 
 export const render = Mustache.render
 
-export function getContentPath (langCode: string) {
-  let pos = findIndex(get('locales'), {
-    code: langCode
-  });
-  if (~pos) {
-    return get('locales')[pos]['contents_path'];
-  } else {
-    throw new Error(`Content path not found for ${langCode} !`);
-  }
-};
+// export function getContentPath (langCode: string) {
+//   let pos = findIndex(get('locales'), {
+//     code: langCode
+//   });
+//   if (~pos) {
+//     return get('locales')[pos]['contents_path'];
+//   } else {
+//     throw new Error(`Content path not found for ${langCode} !`);
+//   }
+// };
 
 export function getAssetPath (langCode: string) {
   let pos = findIndex(get('locales'), {
@@ -38,40 +44,40 @@ export function getAssetPath (langCode: string) {
  * @return {Function} promise    - Function which is called upon completion
  */
 
-export function detectCyclic (uid: string, reference_map: string[]) {
-  let flag, list;
-  (flag = false), (list = [uid]);
+// export function detectCyclic (uid: string, reference_map: string[]) {
+//   let flag, list;
+//   (flag = false), (list = [uid]);
 
-  function _getParents(child: string) {
-    let parents: string[] = [];
-    for (let key in reference_map) {
-      if (~reference_map[key].indexOf(child)) {
-        parents.push(key);
-      }
-    }
-    return parents;
-  }
+//   function _getParents(child: string) {
+//     let parents: string[] = [];
+//     for (let key in reference_map) {
+//       if (~reference_map[key].indexOf(child)) {
+//         parents.push(key);
+//       }
+//     }
+//     return parents;
+//   }
 
-  for (let i = 0; i < list.length; i++) {
-    let parent = _getParents(list[i]);
-    if (~parent.indexOf(uid)) {
-      flag = true;
-      break;
-    }
-    list = uniq(list.concat(parent));
-  }
-  return flag;
-};
+//   for (let i = 0; i < list.length; i++) {
+//     let parent = _getParents(list[i]);
+//     if (~parent.indexOf(uid)) {
+//       flag = true;
+//       break;
+//     }
+//     list = uniq(list.concat(parent));
+//   }
+//   return flag;
+// };
 
-export function sort (collection: any, key: string, operator: number) {
-  collection = sortBy(collection, key);
-  if (~operator) {
-    return collection;
-  } else {
-    let __collection: any[] = [];
-    for (let i = 0, j = collection.length - 1; j >= 0; i++, j--) {
-      __collection[i] = collection[j];
-    }
-    return __collection;
-  }
-};
+// export function sort (collection: any, key: string, operator: number) {
+//   collection = sortBy(collection, key);
+//   if (~operator) {
+//     return collection;
+//   } else {
+//     let __collection: any[] = [];
+//     for (let i = 0, j = collection.length - 1; j >= 0; i++, j--) {
+//       __collection[i] = collection[j];
+//     }
+//     return __collection;
+//   }
+// };

@@ -1,3 +1,9 @@
+/*!
+* contentstack-sync-asset-store-filesystem
+* copyright (c) Contentstack LLC
+* MIT Licensed
+*/
+"use strict"
 import { existsSync } from 'fs'
 import { join } from 'path'
 import { get , build} from './config'

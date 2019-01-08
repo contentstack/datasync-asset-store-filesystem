@@ -1,9 +1,10 @@
 
 /*!
-* contentstack-content-store-mongodb
+* contentstack-sync-asset-store-filesystem
 * copyright (c) Contentstack LLC
 * MIT Licensed
-*/ 
+*/
+"use strict"
 
 export const defaultConfig =  {
 	"locales": [
