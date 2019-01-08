@@ -1,3 +1,9 @@
+/*!
+* contentstack-sync-asset-store-filesystem
+* copyright (c) Contentstack LLC
+* MIT Licensed
+*/
+"use strict"
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { merge, cloneDeep, findIndex, has, isPlainObject, isArray } from 'lodash'
@@ -59,9 +65,9 @@ export const get = function getConfig(key: string) {
   return conf
 }
 
-export const getAll = function getAllConfig () {
-  return cloneDeep(config)
-}
+// export const getAll = function getAllConfig () {
+//   return cloneDeep(config)
+// }
 
 // export const set = function (key: string, value: any) {
 //   key.split('.').reduce((parent, current, index, array) => {

@@ -28,7 +28,8 @@ module.exports = {
   
     // An array of regexp pattern strings used to skip coverage collection
     coveragePathIgnorePatterns: [
-      "<rootDir>/node_modules/", "<rootDir>/test-utils.js"
+      "<rootDir>/node_modules/", "<rootDir>/test-utils.js", "<rootDir>/test_content/", "<rootDir>/dist/config/default.js",
+      "<rootDir>/dist/default.js"
     ],
   
     // A list of reporter names that Jest uses when writing coverage reports

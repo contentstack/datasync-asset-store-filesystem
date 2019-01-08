@@ -1,3 +1,9 @@
+/*!
+* contentstack-sync-asset-store-filesystem
+* copyright (c) Contentstack LLC
+* MIT Licensed
+*/
+"use strict"
 export const messages = {
 	success: {
 		publish: `{{type}} published successfully!`,

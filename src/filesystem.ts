@@ -1,3 +1,9 @@
+/*!
+* contentstack-sync-asset-store-filesystem
+* copyright (c) Contentstack LLC
+* MIT Licensed
+*/
+"use strict"
 import { existsSync, createReadStream, createWriteStream, unlinkSync } from 'fs'
 import * as path from 'path'
 import { Promise as Promises } from 'bluebird'
@@ -10,6 +16,7 @@ import { getAssetPath, render } from './util'
 import { AssetConfigInterface } from './util/interfaces'
 import { messages as msg } from './util/messages'
 import fs from 'fs';
+import { resolveSoa } from 'dns';
 //import { connect } from './mongo-connection';
 
 export class FsManager {
@@ -24,7 +31,7 @@ export class FsManager {
   }
 
   public download(asset, lang_code) {
-    console.log(lang_code, "asasa codeeeeeeeeee")
+    console.log(asset, "download")
     const lang = find(this.langs, lang => {
       return lang.code === lang_code
     })
@@ -78,6 +85,7 @@ export class FsManager {
   }
 
   public delete(asset, locale) {
+    console.log(asset, "delete")
     return new Promises((resolve, reject) => {
       const asset_folder_path = path.join(getAssetPath(locale), asset.uid)
       if (existsSync(asset_folder_path)) {
@@ -85,42 +93,50 @@ export class FsManager {
           if (error) {
             return reject(error)
           }
-          return resolve()
+          return resolve(asset)
         })
       } else {
         console.info(`${asset_folder_path} did not exist!`)
-        return resolve()
+        return resolve(asset)
       }
     })
   }
 
   public unpublish(asset, locale) {
+    console.log(asset, "unpublish")
     console.log("in unpublish asset", asset, locale, "asset and locale")
     return new Promises((resolve, reject) => {
       let asset_folder_path = path.join(getAssetPath(locale), asset.uid)
+      console.log(asset_folder_path,"assetfolderpath")
       //let asset_file_path
       let promise = new Promises(function (_resolve, _reject) {
-
+        console.log("ethe aalo")
         try {
           fs.readdir(asset_folder_path, function (err, files) {
             if (!err) {
               files.forEach(function (file) {
                 console.log(file, "filesssssssssssssssssssss");
                 let path = asset_folder_path + "/" + file
+                console.log("ethe aalo 2")
                 return _resolve(path)
               });
             }
+            else{
+              console.log("ethe aalo 3")
+              console.info(`${asset_folder_path} did not exist!`)
+              _resolve()
+            }
+            
 
           });
         }
         catch (err) {
-          console.info(`${asset_folder_path} did not exist!`)
           _reject(err)
         }
       })
       //console.log("asset_file_path", asset_file_path)
       promise.then(asset_file_path => {
-
+        console.log("ethe aalo 4")
         if (existsSync(asset_file_path)) {
           rimraf(asset_file_path, (error) => {
             if (error) {
@@ -128,11 +144,11 @@ export class FsManager {
               return reject(error)
             }
             console.log("removing file")
-            return resolve()
+            return resolve(asset)
           })
         } else {
           console.info(`${asset_file_path} did not exist!`)
-          return resolve()
+          return resolve(asset)
         }
 
       }).catch((error) => {
