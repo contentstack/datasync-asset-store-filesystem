@@ -4,13 +4,12 @@
 * MIT Licensed
 */
 "use strict"
-import { existsSync, readFileSync } from 'fs'
+import { existsSync } from 'fs'
 import { join } from 'path'
-import { merge, cloneDeep, findIndex, has, isPlainObject, isArray } from 'lodash'
+import { merge, isPlainObject } from 'lodash'
 import { sync } from 'mkdirp'
 import {defaultConfig} from './default'
-import { ConfigInterface, UserConfigInterface, DefaultConfigInterface } from '../util/interfaces'
-//import { init as qbInit } from './query-builder/util'
+import { ConfigInterface, UserConfigInterface } from '../util/interfaces'
 
 let config: ConfigInterface | any = {}
 
@@ -27,7 +26,6 @@ export const build = function init (overrides: UserConfigInterface = {}) {
   const env_config_path_js = join(cpb, 'config', config.env.toLowerCase() + '.js')
   const env_config_path_json = join(cpb, 'config', config.env.toLowerCase() + '.json')
   const default_config_path_js = join(cpb, 'config', 'index.js')
-  //console.log(default_config_path_js,"default_config_path_js")
   if (existsSync(env_config_path_js)) {
     env_config = require(env_config_path_js)
   } else if (existsSync(env_config_path_json)) {
@@ -47,61 +45,23 @@ export const build = function init (overrides: UserConfigInterface = {}) {
       cca.base_dir = cca.base_dir ? join(cpb, cca.base_dir): join(cpb, '_contents')
     }
     if (cca.type === 'filesystem') {
-      console.log("ithe aalo1")
       buildAssetPaths(config)
     }
   }
-  console.log(config,"final configconfigconfigconfigconfigconfigconfigconfigconfigconfig")
   return config;
 }
 
 export const get = function getConfig(key: string) {
- // console.log("get calleddddddddddddddddddddddddddddddddddddddd", key)
   let conf = key.split('.').reduce((total, current) => {
     if (total && typeof total[current] !== 'undefined') return total[current]
     return undefined
   }, config)
-  //console.log("response of", key ,"is", conf)
   return conf
 }
 
-// export const getAll = function getAllConfig () {
-//   return cloneDeep(config)
-// }
 
-// export const set = function (key: string, value: any) {
-//   key.split('.').reduce((parent, current, index, array) => {
-//     if (index < array.length - 1) {
-//       return parent[current]
-//     } else {
-//       parent[current] = value
-//     }
-//   }, config)
-//   if (key === 'locales' || key === 'connector') {
-//     // Reload languages and asset paths
-//     buildAssetPaths(config)
-//     buildContentPaths(config)
-//   }
-// }
-
-// function buildContentPaths (config: ConfigInterface) {
-//   console.log("ithe aalo4")
-//   let locales: {code: string, contents_path: string}[] = config.locales
-//   let content_base_path: string = config["content-connector"].base_dir //config.connector.contents.base_dir
-//   for (let i: number = 0, _i = locales.length; i < _i; i++) {
-//     if (locales[i].hasOwnProperty('code')) {
-//       locales[i].contents_path = join(content_base_path, locales[i].code, 'data')
-//       if (!existsSync(locales[i].contents_path))
-//         sync(locales[i].contents_path, '0755')
-//     } else {
-//       locales.splice(i, 1)
-//       i--
-//     }
-//   }
-// }
 
 function storage(asset_config) {
-  console.log("ithe aalo5")
   const _keys = ['uid', 'filename'];
   if (asset_config.pattern) {
     const split = asset_config.pattern.split('/:');
@@ -115,13 +75,10 @@ function storage(asset_config) {
       keys: _keys
     });
   }
-  console.log(asset_config,"5 madhe")
   return asset_config;
 }
 
 function buildAssetPaths (config: ConfigInterface) {
-  console.log("ithe aalo3")
-  // config.asset-connector = storage(config.asset-connector)
   config["asset-connector"]= storage(config["asset-connector"])
   let locales: {code: string, assets_path: string}[] = config.locales
   let asset_base_path: string = config["asset-connector"].base_dir
