@@ -4,7 +4,7 @@
 * MIT Licensed
 */
 "use strict"
-import { existsSync, createReadStream, createWriteStream, unlinkSync } from 'fs'
+import { existsSync, createWriteStream } from 'fs'
 import * as path from 'path'
 import { Promise as Promises } from 'bluebird'
 import * as request from 'request'
@@ -16,44 +16,36 @@ import { getAssetPath, render } from './util'
 import { AssetConfigInterface } from './util/interfaces'
 import { messages as msg } from './util/messages'
 import fs from 'fs';
-import { resolveSoa } from 'dns';
-//import { connect } from './mongo-connection';
+import LoggerBuilder from "./logger";
+import { debug as Debug } from "debug";
+
+let log
+const debug = Debug("asset-sotre-filesystem");
 
 export class FsManager {
   private asset_config: AssetConfigInterface
   private langs: any[]
 
   constructor(asset_config) {
-    //console.log(asset_config,"gfgfdgfadgfadgfgfdagdagfdgfadg   aset config")
     this.asset_config = asset_config
     this.langs = get('locales')
-
+    log = new LoggerBuilder().Logger
   }
 
   public download(asset, lang_code) {
-    console.log(asset, "download")
+    debug("Asset download called for", asset)
     const lang = find(this.langs, lang => {
       return lang.code === lang_code
     })
-    //console.log(lang,"langlanglanglanglanglanglanglanglanglanglanglang")
     return new Promises((resolve, reject) => {
       const paths = lang.assets_path
-      //console.log("assetttttttttttttttttttttttttttttttttttttttttttttt", asset)
       const pths = this.urlFromObject(asset)
-      //console.log(paths, pths, "pathsssssssssssssssssss")
       asset._internal_url = this.getAssetUrl(pths.join('/'), lang)
       pths.unshift(paths)
       const asset_path = path.join.apply(path, pths)
-      //console.log("asset.url",asset.url)
-
-
-      //let out = request({ url: asset.url })
       request.get({ url: asset.url }).on('response', resp => {
-        //console.log("ithe aalo11")
         if (resp.statusCode === 200) {
-          // console.log("ithe aalo22")
           if (asset.download_id) {
-            //console.log("ithe aalo33")
             let attachment = resp.headers['content-disposition']
             asset['filename'] = decodeURIComponent(attachment.split('=')[1])
           }
@@ -62,15 +54,13 @@ export class FsManager {
             mkdirp.sync(_path, '0755')
           }
           let localStream = createWriteStream(path.join(_path, asset.filename))
-          //console.log(localStream,"localStreamlocalStreamlocalStreamlocalStreamlocalStreamlocalStream")
           resp.pipe(localStream)
           localStream.on('close', () => {
-            //console.log("ithe aalo44")
-            //console.log(asset,"assetassetassetassetassetasset")
+            log.info("Asset downloaded successfully", asset)
             return resolve(asset)
           })
         } else {
-          //console.log("ithe aalo55")
+          log.error(msg.error.asset_download, asset);
           return reject(render(msg.error.asset_download, { filename: asset.filename }))
         }
       })
@@ -78,80 +68,74 @@ export class FsManager {
         .end()
     })
       .catch((error) => {
-        // console.log("in catch error")
-        console.log(error, "eorrrrrr")
+        log.error(msg.error.asset_download, asset);
+        debug(msg.error.asset_download, asset)
+        console.error(error, "eorrrrrr")
       })
 
   }
 
   public delete(asset, locale) {
-    console.log(asset, "delete")
+    debug("Asset deletion called for", asset)
     return new Promises((resolve, reject) => {
       const asset_folder_path = path.join(getAssetPath(locale), asset.uid)
       if (existsSync(asset_folder_path)) {
         rimraf(asset_folder_path, error => {
           if (error) {
+            debug("Error while removing",asset_folder_path, "asset file" );
             return reject(error)
           }
+          debug("Asset deleted successfully")
           return resolve(asset)
         })
       } else {
-        console.info(`${asset_folder_path} did not exist!`)
+        debug(`${asset_folder_path} did not exist!`)
+        log.info(`${asset_folder_path} did not exist!`)
         return resolve(asset)
       }
     })
   }
 
   public unpublish(asset, locale) {
-    console.log(asset, "unpublish")
-    console.log("in unpublish asset", asset, locale, "asset and locale")
+    debug("asset unpublished called for", asset)
     return new Promises((resolve, reject) => {
       let asset_folder_path = path.join(getAssetPath(locale), asset.uid)
-      console.log(asset_folder_path,"assetfolderpath")
-      //let asset_file_path
       let promise = new Promises(function (_resolve, _reject) {
-        console.log("ethe aalo")
         try {
           fs.readdir(asset_folder_path, function (err, files) {
             if (!err) {
               files.forEach(function (file) {
-                console.log(file, "filesssssssssssssssssssss");
                 let path = asset_folder_path + "/" + file
-                console.log("ethe aalo 2")
                 return _resolve(path)
               });
             }
             else{
-              console.log("ethe aalo 3")
-              console.info(`${asset_folder_path} did not exist!`)
+              log.info(`${asset_folder_path} did not exist!`)
               _resolve()
             }
-            
-
           });
         }
         catch (err) {
           _reject(err)
         }
       })
-      //console.log("asset_file_path", asset_file_path)
       promise.then(asset_file_path => {
-        console.log("ethe aalo 4")
         if (existsSync(asset_file_path)) {
           rimraf(asset_file_path, (error) => {
             if (error) {
-              console.log("in if, error while removing file")
+              log.error(`${asset_file_path} asset file not found`);
               return reject(error)
             }
-            console.log("removing file")
+            log.info(`${asset_file_path} asset deleted`);
             return resolve(asset)
           })
         } else {
-          console.info(`${asset_file_path} did not exist!`)
+          log.error(`${asset_file_path} did not exist!`)
           return resolve(asset)
         }
 
       }).catch((error) => {
+        log.error(`asset deletion failed`)
         console.error(error)
       })
     })
@@ -169,7 +153,6 @@ export class FsManager {
 
   // Used to generate asset path from keys using asset
   private urlFromObject(asset: any) {
-    //console.log(asset,"asset in urlformObjest method", this.asset_config, "config")
     var values: any = [],
       _keys = this.asset_config.keys
 

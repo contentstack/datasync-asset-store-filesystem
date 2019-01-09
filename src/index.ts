@@ -9,28 +9,35 @@ import { join } from 'path'
 import { get , build} from './config'
 import { render } from './util'
 import { messages as msg } from './util/messages'
+import LoggerBuilder from "./logger";
+import { debug as Debug } from "debug";
 
+let log
 let asset_manager = null
-
-export function start (config) {
+const debug = Debug("asset-sotre-filesystem");
+export function start (config,customLogger? :any ) {
+	log = new LoggerBuilder(customLogger).Logger
+	try{
 	return new Promise((resolve, reject)=>{
 		build(config)
 		const asset_config = get('asset-connector')
-		//console.log(asset_config,"configgggggggggggggggggggggggggggggg", __dirname)
 		const am_path = join(__dirname, asset_config.type + '.js')
-		//console.log(am_path,"am_patham_patham_patham_patham_patham_patham_patham_path", asset_config,"asset_config")
 		if (existsSync(am_path)) {
 			const AssetManager = require(am_path).FsManager
-			//console.log(AssetManager, "assetmanagerrrrrrrrrrrrrrrrrrrrr")
 			asset_manager = new AssetManager(asset_config)
+			log.info("Asset store loaded successfully")
+			debug("Asset store loaded successfully")
 			resolve(asset_manager) 
 		} else {
-			console.error(render(msg.error.asset_manager_failed, { type: asset_config.type }))
+			debug(msg.error.asset_manager_failed)
+			log.error(msg.error.asset_manager_failed);
 			reject()
 		}
-		//console.log(asset_manager,"asset_managerasset_managerasset_managerasset_managerasset_manager")
-		
-	}).catch((error)=>{
-		console.error(error)
 	})
+	}
+	catch(error){
+		debug(msg.error.asset_manager_failed)
+		log.error(msg.error.asset_manager_failed);
+
+	}
 }
