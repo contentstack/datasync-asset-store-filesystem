@@ -79,6 +79,7 @@ export class FsManager {
     debug("Asset deletion called for", asset)
     return new Promises((resolve, reject) => {
       const asset_folder_path = path.join(getAssetPath(locale), asset.uid)
+      console.log(getAssetPath(locale),"locale path")
       if (existsSync(asset_folder_path)) {
         rimraf(asset_folder_path, error => {
           if (error) {
@@ -100,6 +101,7 @@ export class FsManager {
     debug("asset unpublished called for", asset)
     return new Promises((resolve, reject) => {
       let asset_folder_path = path.join(getAssetPath(locale), asset.uid)
+      console.log(getAssetPath(locale), "locale path+++++++" ,path.join(__dirname,'_contents',locale,'assets'));
       let promise = new Promises(function (_resolve, _reject) {
         try {
           fs.readdir(asset_folder_path, function (err, files) {
