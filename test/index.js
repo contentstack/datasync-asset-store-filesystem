@@ -16,10 +16,6 @@ let conf = {
 
 
 describe('# download', function () {
-	// beforeEach(() => {
-	// 	jest.setTimeout(10000);
-	// });
-
 	beforeAll(function loadConnector() {
 		assetConnector.start(config)
 			.then(_connector => {
