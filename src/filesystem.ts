@@ -132,7 +132,7 @@ export class FsManager {
               log.error(`${asset_file_path} asset file not found`);
               return reject(error)
             }
-            log.info(`${asset_file_path} asset deleted`);
+            log.info(`${asset_file_path} asset unpublished`);
             return resolve(asset)
           })
         } else {
@@ -141,7 +141,7 @@ export class FsManager {
         }
 
       }).catch((error) => {
-        log.error(`asset deletion failed`)
+        log.error(`asset unpublished failed`)
         console.error(error)
       })
     })

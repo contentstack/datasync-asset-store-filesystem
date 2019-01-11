@@ -9,7 +9,7 @@ import { join } from 'path'
 import { messages as msg } from './util/messages'
 import {setLogger, logger } from "./logger";
 import { debug as Debug } from "debug";
-import { defaultConfig } from './config/default';
+import { defaultConfig } from './default';
 
 
 let asset_manager = null
