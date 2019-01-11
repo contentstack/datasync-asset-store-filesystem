@@ -5,49 +5,44 @@
 */
 "use strict"
 
-import {createWriteStream} from 'fs';
-import { Console } from 'console'
+/**
+ * @summary Creates a logger instance
+ * @example
+ *    const log = createLogger(instance)
+ *    log.info('Hello world!')
+ */
 
-export default class LoggerBuilder {
-    private static instance: LoggerBuilder;
-    private logger;
+let logger;
 
-    constructor(customLogger?) {
-        if (LoggerBuilder.instance) {
-            console.log("found log builder instance")
-            return LoggerBuilder.instance;
-        }
-
-        LoggerBuilder.instance = this;
-    
-        let validator = this.validateLogger(customLogger)
-        if( !validator && !customLogger) {
-            console.warn("Failed to register logger, using console for logging.");
-            const output = createWriteStream('./stdout.log');
-            const errorOutput = createWriteStream('./stderr.log');
-            this.logger = new Console(output, errorOutput);
-        } else {
-            customLogger.info("Logger registered successfully.")
-            this.logger = customLogger;
-        }
+export const setLogger = (customLogger?) => {
+    if (logger) {
+        return logger
+    } else if (!validateLogger(customLogger) && !customLogger) {
+        logger = console
+        logger.info('Standard logger created')
+    } else {
+        logger = customLogger
+        logger.info('Customized logger registered successfully!')
     }
+    return logger
+}
 
-    public get Logger() {
-        return this.logger
+function validateLogger(logger) {
+    if (!logger) {
+        console.log("found log undefined")
+        return false;
     }
-
-    private validateLogger(logger) {
-        if(!logger) {
-            console.log("found log undefined")
+    let functionExists = ['info', 'warn', 'log', 'error', 'debug'];
+    functionExists.forEach(functionName => {
+        if (typeof logger[functionName] !== "function") {
+            console.warn("Failed to initialize custom logger due to missing function '" + functionName + "'.")
             return false;
         }
-        let functionExists = ['info', 'warn', 'log', 'error', 'debug'];
-        functionExists.forEach(functionName => {
-            if( typeof logger[functionName] !== "function" ) {
-                console.warn("Failed to initialize custom logger due to missing function '" + functionName + "'.")
-                return false;
-            }
-        });
-        return true;
-    }
+    });
+    return true;
 }
+
+export {logger}
+
+
+
