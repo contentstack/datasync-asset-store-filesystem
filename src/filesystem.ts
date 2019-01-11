@@ -6,41 +6,43 @@
 "use strict"
 import { existsSync, createWriteStream } from 'fs'
 import * as path from 'path'
+import { join } from 'path'
 import { Promise as Promises } from 'bluebird'
 import * as request from 'request'
-import { find } from 'lodash'
 import * as mkdirp from 'mkdirp'
+import { sync } from 'mkdirp'
 import rimraf from 'rimraf'
-import { get } from './config'
-import { getAssetPath, render } from './util'
-import { AssetConfigInterface } from './util/interfaces'
 import { messages as msg } from './util/messages'
 import fs from 'fs';
-import LoggerBuilder from "./logger";
+import {setLogger, logger as log} from "./logger";
 import { debug as Debug } from "debug";
+import * as Mustache from 'mustache'
 
-let log
-const debug = Debug("asset-sotre-filesystem");
+const render = Mustache.render
+
+
+
+const debug = Debug("asset-store-filesystem");
 
 export class FsManager {
-  private asset_config: AssetConfigInterface
-  private langs: any[]
-
+  private asset_config
+  
   constructor(asset_config) {
     this.asset_config = asset_config
-    this.langs = get('locales')
-    log = new LoggerBuilder().Logger
+    setLogger()
   }
 
   public download(asset, lang_code) {
     debug("Asset download called for", asset)
-    const lang = find(this.langs, lang => {
-      return lang.code === lang_code
-    })
     return new Promises((resolve, reject) => {
-      const paths = lang.assets_path
+    let asset_base_path: string = this.asset_config.base_dir
+    let assets_path = join(asset_base_path, lang_code, 'assets')
+    if (!existsSync(assets_path)) {
+      sync(assets_path, '0755')
+    }
+      const paths = assets_path
       const pths = this.urlFromObject(asset)
-      asset._internal_url = this.getAssetUrl(pths.join('/'), lang)
+      asset._internal_url = this.getAssetUrl(pths.join('/'), paths)
       pths.unshift(paths)
       const asset_path = path.join.apply(path, pths)
       request.get({ url: asset.url }).on('response', resp => {
@@ -78,8 +80,9 @@ export class FsManager {
   public delete(asset, locale) {
     debug("Asset deletion called for", asset)
     return new Promises((resolve, reject) => {
-      const asset_folder_path = path.join(getAssetPath(locale), asset.uid)
-      console.log(getAssetPath(locale),"locale path")
+      let asset_base_path: string = this.asset_config.base_dir
+      let assets_path = join(asset_base_path, locale, 'assets')
+      const asset_folder_path = path.join(assets_path, asset.uid)
       if (existsSync(asset_folder_path)) {
         rimraf(asset_folder_path, error => {
           if (error) {
@@ -100,8 +103,9 @@ export class FsManager {
   public unpublish(asset, locale) {
     debug("asset unpublished called for", asset)
     return new Promises((resolve, reject) => {
-      let asset_folder_path = path.join(getAssetPath(locale), asset.uid)
-      console.log(getAssetPath(locale), "locale path+++++++" ,path.join(__dirname,'_contents',locale,'assets'));
+      let asset_base_path: string = this.asset_config.base_dir
+      let assets_path = join(asset_base_path, locale, 'assets')
+      let asset_folder_path = path.join(assets_path, asset.uid)
       let promise = new Promises(function (_resolve, _reject) {
         try {
           fs.readdir(asset_folder_path, function (err, files) {
@@ -144,19 +148,23 @@ export class FsManager {
   }
 
   // Generate the full assets url foro the given url
-  private getAssetUrl(assetUrl, lang) {
-    var relativeUrlPrefix = this.asset_config.relative_url_prefix
-    assetUrl = relativeUrlPrefix + assetUrl
-    if (!(lang.relative_url_prefix === '/' || lang.host)) {
-      assetUrl = lang.relative_url_prefix.slice(0, -1) + assetUrl
+  private getAssetUrl(assetUrl, path) {
+    var relativeUrlPrefix = path.split('/').reverse().slice(0, 2)
+    var code= relativeUrlPrefix[1].split('-')[1]
+    if (code == "us"){
+      assetUrl = join("/", relativeUrlPrefix[0], assetUrl)
     }
+    else{
+      assetUrl = join("/", code , relativeUrlPrefix[0], assetUrl)
+    }
+    
     return assetUrl
   }
 
   // Used to generate asset path from keys using asset
   private urlFromObject(asset: any) {
     var values: any = [],
-      _keys = this.asset_config.keys
+    _keys = ['uid', 'filename']
 
     for (var a = 0, _a = _keys.length; a < _a; a++) {
       if (_keys[a] === 'uid') {
@@ -170,4 +178,6 @@ export class FsManager {
     return values
   }
 }
+
+
 
