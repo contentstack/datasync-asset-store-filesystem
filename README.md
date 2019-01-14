@@ -1,6 +1,6 @@
 [![Contentstack](https://www.contentstack.com/docs/static/images/contentstack.png)](https://www.contentstack.com/)
 
-## Contentstack asset store filesystem
+## Contentstack content store filesystem
 
   
 
@@ -32,3 +32,14 @@ assetConnector.start(config)
 .then((_connector) => {
 	connector = _connector
 })
+```
+### Config
+
+#### 1. type 
+- type of storage for storing the assets. By defaults its value is **filesystem**
+
+#### 2. pattern  
+- pattern for storing the asset the assets. By defaults its value is **/assets/:uid/:filename**
+ 
+ #### 3. base_dir: 
+ - file location to store assets. By defaults its value is   **./_contents**
