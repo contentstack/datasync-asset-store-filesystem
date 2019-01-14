@@ -1,6 +1,6 @@
 [![Contentstack](https://www.contentstack.com/docs/static/images/contentstack.png)](https://www.contentstack.com/)
 
-## Contentstack content store filesystem
+## Contentstack asset store filesystem
 
   
 
