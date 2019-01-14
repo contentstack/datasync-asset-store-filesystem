@@ -7,7 +7,6 @@
 import { existsSync, createWriteStream } from 'fs'
 import * as path from 'path'
 import { join } from 'path'
-import { Promise as Promises } from 'bluebird'
 import * as request from 'request'
 import * as mkdirp from 'mkdirp'
 import { sync } from 'mkdirp'
@@ -17,6 +16,7 @@ import fs from 'fs';
 import {setLogger, logger as log} from "./logger";
 import { debug as Debug } from "debug";
 import * as Mustache from 'mustache'
+
 
 const render = Mustache.render
 
@@ -31,10 +31,14 @@ export class FsManager {
     this.asset_config = asset_config
     setLogger()
   }
-
+  /**
+   * @description to download the acutal asset and store it in fileystem
+   * @param  {object} asset: asset data 
+   * @param  {string} lang_code: locale/language code
+   */
   public download(asset, lang_code) {
     debug("Asset download called for", asset)
-    return new Promises((resolve, reject) => {
+    return new Promise((resolve, reject) => {
     let asset_base_path: string = this.asset_config.base_dir
     let assets_path = join(asset_base_path, lang_code, 'assets')
     if (!existsSync(assets_path)) {
@@ -76,37 +80,58 @@ export class FsManager {
       })
 
   }
-
+  /**
+   * @description to delete the asset from the filesystem
+   * @param  {object} asset: asset data
+   * @param  {string} locale: language/locale code
+   */
   public delete(asset, locale) {
     debug("Asset deletion called for", asset)
-    return new Promises((resolve, reject) => {
-      let asset_base_path: string = this.asset_config.base_dir
-      let assets_path = join(asset_base_path, locale, 'assets')
-      const asset_folder_path = path.join(assets_path, asset.uid)
-      if (existsSync(asset_folder_path)) {
-        rimraf(asset_folder_path, error => {
-          if (error) {
-            debug("Error while removing",asset_folder_path, "asset file" );
-            return reject(error)
-          }
-          debug("Asset deleted successfully")
+    try {
+      return new Promise((resolve, reject) => {
+        let asset_base_path: string = this.asset_config.base_dir
+        let assets_path = join(asset_base_path, locale, 'assets')
+        const asset_folder_path = path.join(assets_path, asset.uid)
+        console.log(asset_folder_path, typeof asset_folder_path,"asset_folder_path")
+        if(typeof asset_folder_path == "string"){
+        if (existsSync(asset_folder_path)) {
+          rimraf(asset_folder_path, error => {
+            if (error) {
+              debug("Error while removing", asset_folder_path, "asset file");
+              return reject(error)
+            }
+            debug("Asset deleted successfully")
+            return resolve(asset)
+          })
+        } else {
+          debug(`${asset_folder_path} did not exist!`)
+          log.info(`${asset_folder_path} did not exist!`)
           return resolve(asset)
-        })
-      } else {
+        }
+      }else{
         debug(`${asset_folder_path} did not exist!`)
         log.info(`${asset_folder_path} did not exist!`)
         return resolve(asset)
       }
-    })
+      })
+    }
+    catch (error) {
+      console.error(error)
+    }
   }
+/**
+   * @description to unpublish the asset from the filesystem
+   * @param  {object} asset: asset data
+   * @param  {string} locale: language/locale code
+   */
 
   public unpublish(asset, locale) {
     debug("asset unpublished called for", asset)
-    return new Promises((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let asset_base_path: string = this.asset_config.base_dir
       let assets_path = join(asset_base_path, locale, 'assets')
       let asset_folder_path = path.join(assets_path, asset.uid)
-      let promise = new Promises(function (_resolve, _reject) {
+      let getPath = new Promise(function (_resolve, _reject) {
         try {
           fs.readdir(asset_folder_path, function (err, files) {
             if (!err) {
@@ -125,9 +150,10 @@ export class FsManager {
           _reject(err)
         }
       })
-      promise.then(asset_file_path => {
-        if (existsSync(asset_file_path)) {
-          rimraf(asset_file_path, (error) => {
+      getPath.then((asset_file_path) => {
+        let path = JSON.stringify(asset_file_path)
+        if (existsSync(path)) {
+          rimraf(path, (error) => {
             if (error) {
               log.error(`${asset_file_path} asset file not found`);
               return reject(error)
@@ -147,11 +173,17 @@ export class FsManager {
     })
   }
 
-  // Generate the full assets url foro the given url
+ 
+  /**
+   * @description Generate the full assets url for the given url
+   * @param  {string} assetUrl
+   * @param  {string} path
+   */
   private getAssetUrl(assetUrl, path) {
     var relativeUrlPrefix = path.split('/').reverse().slice(0, 2)
-    var code= relativeUrlPrefix[1].split('-')[1]
-    if (code == "us"){
+    var code= relativeUrlPrefix[1].split('-')[0]
+    //console.log(code,"code",relativeUrlPrefix,"vrelativeUrlPrefixrelativeUrlPrefixrelativeUrlPrefix")
+    if (code == "en"){
       assetUrl = join("/", relativeUrlPrefix[0], assetUrl)
     }
     else{
@@ -161,7 +193,12 @@ export class FsManager {
     return assetUrl
   }
 
-  // Used to generate asset path from keys using asset
+  
+  
+  /**
+   * @description Used to generate asset path from keys using asset
+   * @param  {any} asset: asset data
+   */
   private urlFromObject(asset: any) {
     var values: any = [],
     _keys = ['uid', 'filename']

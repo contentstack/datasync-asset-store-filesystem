@@ -14,12 +14,17 @@ import { defaultConfig } from './default';
 
 let asset_manager = null
 const debug = Debug("asset-store-filesystem");
+/**
+ * @description to start the asset connector
+ * @param  {object} config: configs
+ * @param  {any} customLogger?: custom logger instacne
+ */
 export function start (config, customLogger? :any ) {
 	try{
 	return new Promise((resolve, reject)=>{
 		if(config == undefined || Object.keys(config['asset-connector']).length == 0){
-			console.log("inside")
 			config = defaultConfig
+			logger.info("Asset store started with default configs")
 		}
 		const asset_config = config['asset-connector'] 
 		const am_path = join(__dirname, asset_config.type + '.js')

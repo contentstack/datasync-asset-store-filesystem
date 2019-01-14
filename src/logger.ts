@@ -5,15 +5,15 @@
 */
 "use strict"
 
+
+
+let logger;
 /**
  * @summary Creates a logger instance
  * @example
- *    const log = createLogger(instance)
+ *    const log = setLogger(instance)
  *    log.info('Hello world!')
  */
-
-let logger;
-
 export const setLogger = (customLogger?) => {
     if (logger) {
         return logger
@@ -26,7 +26,10 @@ export const setLogger = (customLogger?) => {
     }
     return logger
 }
-
+/**
+ * @description to validate/check logger has 'info', 'warn', 'log', 'error', 'debug' 
+ * @param  {any} logger: logger instance
+ */
 function validateLogger(logger) {
     if (!logger) {
         console.log("found log undefined")
