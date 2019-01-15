@@ -83,7 +83,6 @@ describe('# download', function () {
 			"title": "Widakk.png",
 			"no": 3
 		}, "en-us").then(function (result) {
-			//console.log(result,"result")
 			expect(result).toHaveProperty("title");
 			expect(result).toHaveProperty("title", "Widakk.png");
 		})
