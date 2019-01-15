@@ -3,7 +3,7 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
-"use strict"
+
 export const defs = {
 	ct: {
 		schema: '_content_types',

@@ -3,48 +3,45 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
-"use strict"
-import { existsSync } from 'fs'
-import { join } from 'path'
-import { messages as msg } from './util/messages'
-import {setLogger, logger } from "./logger";
+
+import { merge } from "lodash";
+import { setLogger , logger as log } from "./logger";
 import { debug as Debug } from "debug";
 import { defaultConfig } from './default';
+import { FsManager } from './filesystem'
 
 
-let asset_manager = null
+let connector = null
 const debug = Debug("asset-store-filesystem");
 /**
  * @description to start the asset connector
- * @param  {object} config: configs
- * @param  {any} customLogger?: custom logger instacne
+ * @param  {Object} config: configs
+ * @param  {Object} logger: logger instance
  */
-export function start (config, customLogger? :any ) {
-	try{
-	return new Promise((resolve, reject)=>{
-		if(config == undefined || Object.keys(config['asset-connector']).length == 0){
-			config = defaultConfig
-			logger.info("Asset store started with default configs")
-		}
-		const asset_config = config['asset-connector'] 
-		const am_path = join(__dirname, asset_config.type + '.js')
-		setLogger()
-		if (existsSync(am_path)) {
-			const AssetManager = require(am_path).FsManager
-			asset_manager = new AssetManager(asset_config)
-			logger.info("Asset store loaded successfully")
-			debug("Asset store loaded successfully")
-			resolve(asset_manager) 
-		} else {
-			debug(msg.error.asset_manager_failed)
-			logger.error(msg.error.asset_manager_failed);
-			reject()
+export function start(config, logger?) {
+	return new Promise((resolve, reject) => {
+		try {
+			if (config) {
+				config = merge(defaultConfig,config)
+				console.log(config,"caseetttttttttttttttttttttttttttttttonfig")
+			} else {
+			  log.info("Starting connector with default configs");
+			}
+			setLogger(logger)
+			connector = new FsManager(config)
+			resolve(connector)
+		  }
+		  catch (error) {
+			debug('Failed to load asset-store due to', error);
+			log.error('Failed to load asset-store', error);
+			reject(error)
 		}
 	})
-	}
-	catch(error){
-		debug(msg.error.asset_manager_failed)
-		logger.error(msg.error.asset_manager_failed);
-
-	}
+}
+/**
+ * @description Set custom logger for logging
+ * @param {Object} instance - Custom logger instance
+ */
+export const setCustomLogger = (logger?) => {
+  setLogger(logger)
 }

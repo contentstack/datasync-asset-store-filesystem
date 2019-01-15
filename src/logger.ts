@@ -3,9 +3,6 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
-"use strict"
-
-
 
 let logger;
 /**
@@ -45,7 +42,7 @@ function validateLogger(logger) {
     return true;
 }
 
-export {logger}
+export { logger }
 
 
 

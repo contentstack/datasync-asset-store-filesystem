@@ -4,7 +4,6 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
-"use strict"
 
 export const defaultConfig =  {
 		"asset-connector": {

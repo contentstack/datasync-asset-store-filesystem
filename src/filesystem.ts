@@ -3,47 +3,38 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
-"use strict"
+
 import { existsSync, createWriteStream } from 'fs'
 import * as path from 'path'
-import { join } from 'path'
 import * as request from 'request'
 import * as mkdirp from 'mkdirp'
-import { sync } from 'mkdirp'
 import rimraf from 'rimraf'
 import { messages as msg } from './util/messages'
-import fs from 'fs';
-import {setLogger, logger as log} from "./logger";
+import { logger as log } from "./logger";
 import { debug as Debug } from "debug";
-import * as Mustache from 'mustache'
-
-
-const render = Mustache.render
-
 
 
 const debug = Debug("asset-store-filesystem");
 
 export class FsManager {
   private asset_config
-  
+
   constructor(asset_config) {
     this.asset_config = asset_config
-    setLogger()
   }
   /**
    * @description to download the acutal asset and store it in fileystem
-   * @param  {object} asset: asset data 
-   * @param  {string} lang_code: locale/language code
+   * @param  {object} assetData: asset data 
    */
-  public download(asset, lang_code) {
-    debug("Asset download called for", asset)
+  public download(assetData) {
+    debug("Asset download called for", assetData)
     return new Promise((resolve, reject) => {
-    let asset_base_path: string = this.asset_config.base_dir
-    let assets_path = join(asset_base_path, lang_code, 'assets')
-    if (!existsSync(assets_path)) {
-      sync(assets_path, '0755')
-    }
+      let asset_base_path: string = this.asset_config.base_dir
+      let assets_path = path.join(asset_base_path, assetData.locale, 'assets')
+      let asset = assetData.data
+      if (!existsSync(assets_path)) {
+        mkdirp.sync(assets_path, '0755')
+      }
       const paths = assets_path
       const pths = this.urlFromObject(asset)
       asset._internal_url = this.getAssetUrl(pths.join('/'), paths)
@@ -67,15 +58,15 @@ export class FsManager {
           })
         } else {
           log.error(msg.error.asset_download, asset);
-          return reject(render(msg.error.asset_download, { filename: asset.filename }))
+          return reject()
         }
       })
         .on('error', reject)
         .end()
     })
       .catch((error) => {
-        log.error(msg.error.asset_download, asset);
-        debug(msg.error.asset_download, asset)
+        log.error(msg.error.asset_download, assetData);
+        debug(msg.error.asset_download, assetData)
         console.error(error, "eorrrrrr")
       })
 
@@ -83,17 +74,15 @@ export class FsManager {
   /**
    * @description to delete the asset from the filesystem
    * @param  {object} asset: asset data
-   * @param  {string} locale: language/locale code
    */
-  public delete(asset, locale) {
+  public delete(asset) {
     debug("Asset deletion called for", asset)
-    try {
-      return new Promise((resolve, reject) => {
-        let asset_base_path: string = this.asset_config.base_dir
-        let assets_path = join(asset_base_path, locale, 'assets')
-        const asset_folder_path = path.join(assets_path, asset.uid)
-        console.log(asset_folder_path, typeof asset_folder_path,"asset_folder_path")
-        if(typeof asset_folder_path == "string"){
+
+    return new Promise((resolve, reject) => {
+      let asset_base_path: string = this.asset_config.base_dir
+      let assets_path = path.join(asset_base_path, asset.locale, 'assets')
+      const asset_folder_path = path.join(assets_path, asset.uid)
+      if (typeof asset_folder_path == "string") {
         if (existsSync(asset_folder_path)) {
           rimraf(asset_folder_path, error => {
             if (error) {
@@ -108,100 +97,52 @@ export class FsManager {
           log.info(`${asset_folder_path} did not exist!`)
           return resolve(asset)
         }
-      }else{
+      } else {
         debug(`${asset_folder_path} did not exist!`)
         log.info(`${asset_folder_path} did not exist!`)
         return resolve(asset)
       }
-      })
-    }
-    catch (error) {
-      console.error(error)
-    }
-  }
-/**
-   * @description to unpublish the asset from the filesystem
-   * @param  {object} asset: asset data
-   * @param  {string} locale: language/locale code
-   */
-
-  public unpublish(asset, locale) {
-    debug("asset unpublished called for", asset)
-    return new Promise((resolve, reject) => {
-      let asset_base_path: string = this.asset_config.base_dir
-      let assets_path = join(asset_base_path, locale, 'assets')
-      let asset_folder_path = path.join(assets_path, asset.uid)
-      let getPath = new Promise(function (_resolve, _reject) {
-        try {
-          fs.readdir(asset_folder_path, function (err, files) {
-            if (!err) {
-              files.forEach(function (file) {
-                let path = asset_folder_path + "/" + file
-                return _resolve(path)
-              });
-            }
-            else{
-              log.info(`${asset_folder_path} did not exist!`)
-              _resolve()
-            }
-          });
-        }
-        catch (err) {
-          _reject(err)
-        }
-      })
-      getPath.then((asset_file_path) => {
-        let path = JSON.stringify(asset_file_path)
-        if (existsSync(path)) {
-          rimraf(path, (error) => {
-            if (error) {
-              log.error(`${asset_file_path} asset file not found`);
-              return reject(error)
-            }
-            log.info(`${asset_file_path} asset unpublished`);
-            return resolve(asset)
-          })
-        } else {
-          log.error(`${asset_file_path} did not exist!`)
-          return resolve(asset)
-        }
-
-      }).catch((error) => {
-        log.error(`asset unpublished failed`)
-        console.error(error)
-      })
     })
+
+  }
+  /**
+     * @description to unpublish the asset from the filesystem
+     * @param  {object} asset: asset data
+     */
+
+  public unpublish(asset) {
+    debug("asset unpublished called for", asset)
+    this.delete(asset)
   }
 
- 
+
   /**
    * @description Generate the full assets url for the given url
    * @param  {string} assetUrl
-   * @param  {string} path
+   * @param  {string} pth
    */
-  private getAssetUrl(assetUrl, path) {
-    var relativeUrlPrefix = path.split('/').reverse().slice(0, 2)
-    var code= relativeUrlPrefix[1].split('-')[0]
-    //console.log(code,"code",relativeUrlPrefix,"vrelativeUrlPrefixrelativeUrlPrefixrelativeUrlPrefix")
-    if (code == "en"){
-      assetUrl = join("/", relativeUrlPrefix[0], assetUrl)
+  private getAssetUrl(assetUrl, pth) {
+    var relativeUrlPrefix = pth.split('/').reverse().slice(0, 2)
+    var code = relativeUrlPrefix[1].split('-')[0]
+    if (code == "en") {
+      assetUrl = path.join("/", relativeUrlPrefix[0], assetUrl)
     }
-    else{
-      assetUrl = join("/", code , relativeUrlPrefix[0], assetUrl)
+    else {
+      assetUrl = path.join("/", code, relativeUrlPrefix[0], assetUrl)
     }
-    
+
     return assetUrl
   }
 
-  
-  
+
+
   /**
    * @description Used to generate asset path from keys using asset
    * @param  {any} asset: asset data
    */
   private urlFromObject(asset: any) {
     var values: any = [],
-    _keys = ['uid', 'filename']
+      _keys = ['uid', 'filename']
 
     for (var a = 0, _a = _keys.length; a < _a; a++) {
       if (_keys[a] === 'uid') {
@@ -209,12 +150,14 @@ export class FsManager {
       } else if (asset[_keys[a]]) {
         values.push(asset[_keys[a]])
       } else {
-        throw new TypeError(render(msg.error.asset_key_undefined, { key: _keys[a] }))
+        debug(msg.error.asset_key_undefined)
+        log.error(msg.error.asset_key_undefined);
       }
     }
     return values
   }
 }
+
 
 
 
