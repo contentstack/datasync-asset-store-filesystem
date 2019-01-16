@@ -11,6 +11,7 @@ dist
 !test-utils.js
 !jest.config.js
 !tsconfig.json
+!tslint.json
 !LICENSE
 !.npmignore
 !test
