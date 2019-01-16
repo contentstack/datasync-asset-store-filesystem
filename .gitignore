@@ -1,6 +1,8 @@
 *
 coverage
 dist
+!example
+!example/**
 !src
 !src/**
 !.gitignore
@@ -10,5 +12,6 @@ dist
 !jest.config.js
 !tsconfig.json
 !LICENSE
+!.npmignore
 !test
 !test/**
