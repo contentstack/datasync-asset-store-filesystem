@@ -5,10 +5,10 @@
 * MIT Licensed
 */
 
-export const defaultConfig =  {
-		"asset-connector": {
-    	"type": 'filesystem',
-      "pattern": '/assets/:uid/:filename',
-      "base_dir": './_contents'
-    }
-}
+export const defaultConfig = {
+  'asset-connector': {
+    type: 'filesystem',
+    pattern: '/assets/:uid/:filename',
+    base_dir: './_contents',
+  },
+};
