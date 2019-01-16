@@ -4,45 +4,42 @@
 * MIT Licensed
 */
 
+import { Console } from 'console';
+
+
 let logger;
+logger = new Console(process.stdout, process.stderr);
+
 /**
- * @summary Creates a logger instance
- * @example
- *    const log = setLogger(instance)
- *    log.info('Hello world!')
+ * It will register a logger this it to be used accross the module other wise
+ * console log will be used.
+ * @param {object} customLogger instance of a logger to be register
  */
-export const setLogger = (customLogger?) => {
-    if (logger) {
-        return logger
-    } else if (!validateLogger(customLogger) && !customLogger) {
-        logger = console
-        logger.info('Standard logger created')
+function setLogger(customLogger) {
+    const validator = validateLogger(customLogger);
+    if (!validator) {
+        console.warn('Failed to register logger, using console for logging.');
     } else {
-        logger = customLogger
-        logger.info('Customized logger registered successfully!')
+        logger = customLogger;
+        logger.info('Logger registered successfully.');
     }
-    return logger
-}
-/**
- * @description to validate/check logger has 'info', 'warn', 'log', 'error', 'debug' 
- * @param  {any} logger: logger instance
- */
-function validateLogger(logger) {
-    if (!logger) {
-        console.log("found log undefined")
-        return false;
-    }
-    let functionExists = ['info', 'warn', 'log', 'error', 'debug'];
-    functionExists.forEach(functionName => {
-        if (typeof logger[functionName] !== "function") {
-            console.warn("Failed to initialize custom logger due to missing function '" + functionName + "'.")
-            return false;
-        }
-    });
-    return true;
 }
 
-export { logger }
 
+const validateLogger = (instance) => {
+    let flag = false
+    if (!instance) {
+      return flag
+    }
+    const requiredFn = ['info', 'warn', 'log', 'error', 'debug']
+    requiredFn.forEach((name) => {
+      if (typeof instance[name] !== 'function') {
+        console.warn(`Unable to register custom logger since '${name}()' does not exist on ${instance}!`)
+        flag = true
+      }
+    })
+  
+    return !flag
+  }
 
-
+export {logger, setLogger};
