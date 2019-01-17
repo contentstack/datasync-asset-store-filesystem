@@ -10,7 +10,7 @@ import { defaultConfig } from './default';
 import { FsManager } from './filesystem';
 import { logger as log, setLogger } from './logger';
 
-let connector = null;
+let connector;
 const debug = Debug('asset-store-filesystem');
 /**
  * @description to start the asset connector
@@ -31,7 +31,6 @@ export function start(config, logger?) {
       resolve(connector);
     } catch (error) {
       debug('Failed to load asset-store due to', error);
-      log.error('Failed to load asset-store', error);
       reject(error);
     }
   });

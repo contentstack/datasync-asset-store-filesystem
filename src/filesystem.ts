@@ -41,15 +41,11 @@ export class FsManager {
         const assetPath = path.join.apply(path, pths);
         request.get({ url: asset.url }).on('response', (resp) => {
           if (resp.statusCode === 200) {
-            if (asset.download_id) {
-              const attachment = resp.headers['content-disposition'];
-              asset.filename = decodeURIComponent(attachment.split('=')[1]);
+            const pth = assetPath.replace(asset.filename, '');
+            if (!existsSync(pth)) {
+              mkdirp.sync(pth, '0755');
             }
-            const _path = assetPath.replace(asset.filename, '');
-            if (!existsSync(_path)) {
-              mkdirp.sync(_path, '0755');
-            }
-            const localStream = createWriteStream(path.join(_path, asset.filename));
+            const localStream = createWriteStream(path.join(pth, asset.filename));
             resp.pipe(localStream);
             localStream.on('close', () => {
               log.info(`${asset.uid} Asset downloaded successfully`);
@@ -57,16 +53,15 @@ export class FsManager {
             });
           } else {
             log.error(`${asset.uid} Asset download failed`);
-            return reject(assetData);
+            return reject(`${asset.uid} Asset download failed`);
           }
         })
           .on('error', reject)
           .end();
       }
       catch (error) {
-        log.error(`${assetData.data.uid} Asset download failed`);
         debug(`${assetData.data.uid} Asset download failed`);
-        reject(assetData);
+        reject(error);
       }
     });
   }
@@ -104,9 +99,9 @@ export class FsManager {
 
   }
   /**
-     * @description to unpublish the asset from the filesystem
-     * @param  {object} asset: asset data
-     */
+   * @description to unpublish the asset from the filesystem
+   * @param  {object} asset: asset data
+   */
 
   public unpublish(asset) {
     debug('asset unpublished called for', asset);
@@ -114,7 +109,7 @@ export class FsManager {
       try {
         this.delete(asset).then(resolve).catch(reject);
       } catch (error) {
-        console.error(error);
+        reject(error);
       }
     });
   }
@@ -127,14 +122,9 @@ export class FsManager {
   private getAssetUrl(assetUrl, pth) {
     const relativeUrlPrefix = pth.split('/').reverse().slice(0, 2);
     const code = relativeUrlPrefix[1].split('-')[0];
-    if (code == 'en') {
-      assetUrl = path.join('/', relativeUrlPrefix[0], assetUrl);
-    }
-    else {
-      assetUrl = path.join('/', code, relativeUrlPrefix[0], assetUrl);
-    }
-
-    return assetUrl;
+    const url = (code === 'en') ? path.join('/', relativeUrlPrefix[0], assetUrl) :
+      path.join('/', code, relativeUrlPrefix[0], assetUrl);
+    return url;
   }
 
   /**
@@ -142,14 +132,14 @@ export class FsManager {
    * @param  {any} asset: asset data
    */
   private urlFromObject(asset: any) {
-    const values: any = [],
-      _keys = ['uid', 'filename'];
+    const values: any = [];
+    const keys = ['uid', 'filename'];
 
-    for (let a = 0, _a = _keys.length; a < _a; a++) {
-      if (_keys[a] === 'uid') {
+    for (let a = 0, i = keys.length; a < i; a++) {
+      if (keys[a] === 'uid') {
         values.push(asset.uid);
-      } else if (asset[_keys[a]]) {
-        values.push(asset[_keys[a]]);
+      } else if (asset[keys[a]]) {
+        values.push(asset[keys[a]]);
       } else {
         debug(`key is undefined`);
       }
