@@ -49,7 +49,7 @@ export class FsManager {
             resp.pipe(localStream);
             localStream.on('close', () => {
               log.info(`${asset.uid} Asset downloaded successfully`);
-              return resolve(asset);
+              return resolve(assetData);
             });
           } else {
             log.error(`${asset.uid} Asset download failed`);
