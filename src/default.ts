@@ -7,8 +7,9 @@
 
 export const defaultConfig = {
   'asset-connector': {
-    type: 'filesystem',
-    pattern: '/assets/:uid/:filename',
     base_dir: './_contents',
+    pattern: '/assets/:uid/:filename',
+    type: 'filesystem',
+
   },
 };

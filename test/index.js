@@ -93,20 +93,6 @@ let asset_data3 = {
 	}
 }
 
-// const winston = require('winston')
-// const CustomLogger = winston.createLogger({
-// 	level: 'info',
-// 	format: winston.format.json(),
-// 	defaultMeta: {service: 'user-service'},
-// 	transports: [
-// 		//
-// 		// - Write to all logs with level `info` and below to `combined.log`
-// 		// - Write all logs error (and below) to `error.log`.
-// 		//
-// 		new winston.transports.File({ filename: 'error.log', level: 'error' }),
-// 		new winston.transports.File({ filename: 'combined.log' })
-// 	]
-// });
 let logger = console
 describe('# asset test', function () {
 
@@ -115,14 +101,23 @@ describe('# asset test', function () {
 			.then(_connector => {
 				connector = _connector
 			})
+			setTimeout(()=>{
+
+			}, 1000)
 	})
 
-	test('# start()', function () {
+	test('# test start and getConnectorInstance methods', function () {
 		const asset = require('../dist')
+		
 		asset.start(conf)
 			.then(_connector => {
-				let tp = _connector
+				let store = _connector
 			})
+		let instance= asset.getConnectorInstance()
+		return instance.download(asset_data).then(function (result) {
+			expect(result).toHaveProperty("uid");
+			expect(result).toHaveProperty("uid", "blt9c4ef3c49f7b18e9");
+		})
 	})
 
 	test('# download asset', function () {
@@ -136,7 +131,7 @@ describe('# asset test', function () {
 	test('# download non existent asset', function () {
 		return connector.download(asset_data2).then(function () {
 		}).catch(error =>{
-			expect(error).toBe(asset_data2)
+			expect(error).toBe('blt9c4ef3c49f7b18h9 Asset download failed')
 		})
 	})
 
