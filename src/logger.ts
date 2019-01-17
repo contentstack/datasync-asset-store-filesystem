@@ -20,7 +20,7 @@ function setLogger(customLogger) {
         logger.warn('Failed to register logger, using console for logging.');
     } else {
         logger = customLogger;
-        logger.info('Logger registered successfully.');
+        //logger.info('Logger registered successfully.');
     }
 }
 
