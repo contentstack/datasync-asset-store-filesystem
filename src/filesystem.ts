@@ -83,13 +83,12 @@ export class FsManager {
               debug('Error while removing', assetFolderPath, 'asset file');
               return reject(error);
             }
-            debug('Asset deleted successfully');
-            log.info(`${asset.uid} Asset deleted successfully`);
+            debug('Asset removed successfully');
+            log.info(`${asset.uid} Asset removed successfully`);
             return resolve(asset);
           });
         } else {
           debug(`${assetFolderPath} did not exist!`);
-          log.info(`${assetFolderPath} did not exist!`);
           return resolve(asset);
         }
       } catch (error) {
