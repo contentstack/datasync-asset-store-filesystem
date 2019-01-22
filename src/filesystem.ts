@@ -119,7 +119,7 @@ export class FsManager {
    * @param  {string} pth
    */
   private getAssetUrl(assetUrl, pth) {
-    const relativeUrlPrefix = pth.split('/').reverse().slice(0, 2);
+    const relativeUrlPrefix = pth.split(path.sep).reverse().slice(0, 2);
     const code = relativeUrlPrefix[1].split('-')[0];
     const url = (code === 'en') ? path.join('/', relativeUrlPrefix[0], assetUrl) :
       path.join('/', code, relativeUrlPrefix[0], assetUrl);
