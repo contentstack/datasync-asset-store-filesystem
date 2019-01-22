@@ -5,6 +5,8 @@ dist
 !example/**
 !src
 !src/**
+!dist
+!dist/**
 !.gitignore
 !package.json
 !README.md
