@@ -46,26 +46,33 @@ class FsManager {
                 asset._internal_url = this.getAssetUrl(pths.join('/'), paths);
                 pths.unshift(paths);
                 const assetPath = path.join.apply(path, pths);
-                request.get({ url: asset.url }).on('response', (resp) => {
-                    if (resp.statusCode === 200) {
-                        const pth = assetPath.replace(asset.filename, '');
-                        if (!fs_1.existsSync(pth)) {
-                            mkdirp.sync(pth, '0755');
+                if (!fs_1.existsSync(assetPath)) {
+                    request.get({ url: asset.url }).on('response', (resp) => {
+                        if (resp.statusCode === 200) {
+                            const pth = assetPath.replace(asset.filename, '');
+                            if (!fs_1.existsSync(pth)) {
+                                mkdirp.sync(pth, '0755');
+                            }
+                            const localStream = fs_1.createWriteStream(path.join(pth, asset.filename));
+                            resp.pipe(localStream);
+                            localStream.on('close', () => {
+                                logger_1.logger.info(`${asset.uid} Asset downloaded successfully`);
+                                return resolve(assetData);
+                            });
                         }
-                        const localStream = fs_1.createWriteStream(path.join(pth, asset.filename));
-                        resp.pipe(localStream);
-                        localStream.on('close', () => {
-                            logger_1.logger.info(`${asset.uid} Asset downloaded successfully`);
-                            return resolve(assetData);
-                        });
-                    }
-                    else {
-                        logger_1.logger.error(`${asset.uid} Asset download failed`);
-                        return reject(`${asset.uid} Asset download failed`);
-                    }
-                })
-                    .on('error', reject)
-                    .end();
+                        else {
+                            logger_1.logger.error(`${asset.uid} Asset download failed`);
+                            return reject(`${asset.uid} Asset download failed`);
+                        }
+                    })
+                        .on('error', reject)
+                        .end();
+                }
+                else {
+                    debug(`Skipping asset download since it is already downloaded and it's present path is ${assetPath} `);
+                    logger_1.logger.info(`Skipping asset(${asset.uid}:${asset.filename}) download since it is already present`);
+                    return resolve(assetData);
+                }
             }
             catch (error) {
                 debug(`${assetData.data.uid} Asset download failed`);
