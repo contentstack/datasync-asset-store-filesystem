@@ -39,6 +39,7 @@ export class FsManager {
         asset._internal_url = this.getAssetUrl(pths.join('/'), paths);
         pths.unshift(paths);
         const assetPath = path.join.apply(path, pths);
+        if(!existsSync(assetPath)){
         request.get({ url: asset.url }).on('response', (resp) => {
           if (resp.statusCode === 200) {
             const pth = assetPath.replace(asset.filename, '');
@@ -58,6 +59,11 @@ export class FsManager {
         })
           .on('error', reject)
           .end();
+        }else{
+          debug(`Skipping asset download since it is already downloaded and it's present path is ${assetPath} `);
+          log.info(`Skipping asset(${asset.uid}:${asset.filename}) download since it is already present`)
+          return resolve(assetData);
+        }
       }
       catch (error) {
         debug(`${assetData.data.uid} Asset download failed`);

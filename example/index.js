@@ -38,9 +38,9 @@ let asset_data2= {
 	action: 'publish',
 	publish_queue_uid: 'bltbbdda2b410005b26a6e6',
 	locale: 'en-us',
-	uid: 'blt9c4ef3c49f7b18h9',
+	uid: 'blt9c4ef3c49f7b18e9',
 	data: {
-		uid: 'blt9c4ef3c49f7b18h9',
+		uid: 'blt9c4ef3c49f7b18e9',
 		created_at: '2018-06-19T12:06:38.066Z',
 		updated_at: '2018-06-19T12:06:38.066Z',
 		created_by: 'blt607b206b64807684',
