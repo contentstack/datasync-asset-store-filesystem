@@ -24,14 +24,12 @@ function start(config, logger) {
     }
     return new Promise((resolve, reject) => {
         try {
-            if (config) {
-                config = lodash_1.merge(default_1.defaultConfig, config);
-            }
+            config = (config) ? lodash_1.merge(default_1.defaultConfig, config) : default_1.defaultConfig;
             connector = new filesystem_1.FsManager(config);
-            resolve(connector);
+            return resolve(connector);
         }
         catch (error) {
-            debug('Failed to load asset-store due to', error);
+            debug('Failed to load content-store due to', error);
             reject(error);
         }
     });
@@ -44,4 +42,3 @@ function getConnectorInstance() {
     return connector;
 }
 exports.getConnectorInstance = getConnectorInstance;
-//# sourceMappingURL=index.js.map

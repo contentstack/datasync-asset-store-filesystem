@@ -11,4 +11,3 @@ exports.defaultConfig = {
         pattern: '/assets/:uid/:filename'
     },
 };
-//# sourceMappingURL=default.js.map

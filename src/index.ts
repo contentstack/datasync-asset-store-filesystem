@@ -10,6 +10,7 @@ import { defaultConfig } from './default';
 import { FsManager } from './filesystem';
 import { logger as log, setLogger } from './logger';
 
+
 let connector;
 const debug = Debug('asset-store-filesystem');
 /**
@@ -24,15 +25,14 @@ export function start(config, logger?) {
 
   return new Promise((resolve, reject) => {
     try {
-      if (config) {
-        config = merge(defaultConfig, config);
-      }
+      config = (config) ? merge(defaultConfig, config) : defaultConfig
       connector = new FsManager(config);
-      resolve(connector);
+      return resolve(connector);
     } catch (error) {
-      debug('Failed to load asset-store due to', error);
+      debug('Failed to load content-store due to', error);
       reject(error);
     }
+    
   });
 }
 /**

@@ -7,6 +7,7 @@
 
 const assetConnector = require('../dist')
 const config = require('../dist/default')
+const filesystem = require('fs')
 let connector = null
 
 let conf = {
@@ -120,6 +121,20 @@ describe('# asset test', function () {
 		})
 	})
 
+	test('# test start and getConnectorInstance methods', function () {
+		const asset = require('../dist')
+		
+		asset.start()
+			.then(_connector => {
+				let store = _connector
+			}).catch((error)=>{
+				expect(error).toBe(error)
+			})
+		
+	})
+	
+	
+
 	test('# download asset', function () {
 		return connector.download(asset_data).then(function (result) {
 			expect(result).toHaveProperty("uid");
@@ -154,13 +169,26 @@ describe('# asset test', function () {
 			expect(result).toHaveProperty("uid", "blt9c4ef3c49f7b18f9");
 		})
 	})
-
+	
 	test('# delete asset', function () {
+		filesystem.chmodSync('./_contents/mr-in/assets/blt9c4ef3c49f7b18f9', '000')
+		return connector.delete(asset_data3).then(function (result) {
+			expect(result).toHaveProperty("uid");
+			expect(result).toHaveProperty("uid", "blt9c4ef3c49f7b18f9");
+		}).catch((error)=>{
+			expect(error).toBe(error)
+		})
+	})
+	test('# delete asset', function () {
+		filesystem.chmodSync('./_contents/mr-in/assets/blt9c4ef3c49f7b18f9', '755')
 		return connector.delete(asset_data3).then(function (result) {
 			expect(result).toHaveProperty("uid");
 			expect(result).toHaveProperty("uid", "blt9c4ef3c49f7b18f9");
 		})
 	})
+
+
+	
 
 	test('# delete non existent asset', function () {
 		return connector.delete(asset_data3).then(function (result) {
