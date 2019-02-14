@@ -79,7 +79,7 @@ export class FsManager {
     debug('Asset deletion called for', asset);
 
     return new Promise((resolve, reject) => {
-      //try {
+      try {
         const assetBasePath: string = this.assetConfig['asset-connector'].base_dir;
         const assetsPath = path.join(assetBasePath, asset.locale, 'assets');
         const assetFolderPath = path.join(assetsPath, asset.uid);
@@ -97,9 +97,9 @@ export class FsManager {
           debug(`${assetFolderPath} did not exist!`);
           return resolve(asset);
         }
-      // } catch (error) {
-      //   reject(error);
-      // }
+      } catch (error) {
+        reject(error);
+      }
     });
 
   }
@@ -111,11 +111,11 @@ export class FsManager {
   public unpublish(asset) {
     debug('asset unpublished called for', asset);
     return new Promise((resolve, reject) => {
-      //try {
+      try {
         this.delete(asset).then(resolve).catch(reject);
-      // } catch (error) {
-      //   reject(error);
-      // }
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 

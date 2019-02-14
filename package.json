@@ -21,7 +21,7 @@
     "test": "jest --coverage",
     "compile": "tsc",
     "prepare": "npm run compile",
-    "pretest": "npm run compile && rimraf _contents"
+    "pretest": "npm run build-ts && rimraf _contents coverage"
   },
   "repository": {
     "type": "git",
