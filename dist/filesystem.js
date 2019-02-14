@@ -4,22 +4,15 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug_1 = require("debug");
 const fs_1 = require("fs");
-const mkdirp = __importStar(require("mkdirp"));
-const path = __importStar(require("path"));
-const request = __importStar(require("request"));
+const mkdirp_1 = __importDefault(require("mkdirp"));
+const path_1 = __importDefault(require("path"));
+const request_1 = __importDefault(require("request"));
 const rimraf_1 = __importDefault(require("rimraf"));
 const logger_1 = require("./logger");
 const debug = debug_1.debug('asset-store-filesystem');
@@ -36,24 +29,24 @@ class FsManager {
         return new Promise((resolve, reject) => {
             try {
                 const assetBasePath = this.assetConfig['asset-connector'].base_dir;
-                const assetsPath = path.join(assetBasePath, assetData.locale, 'assets');
+                const assetsPath = path_1.default.join(assetBasePath, assetData.locale, 'assets');
                 const asset = assetData.data;
                 if (!fs_1.existsSync(assetsPath)) {
-                    mkdirp.sync(assetsPath, '0755');
+                    mkdirp_1.default.sync(assetsPath, '0755');
                 }
                 const paths = assetsPath;
                 const pths = this.urlFromObject(asset);
                 asset._internal_url = this.getAssetUrl(pths.join('/'), paths);
                 pths.unshift(paths);
-                const assetPath = path.join.apply(path, pths);
+                const assetPath = path_1.default.join.apply(path_1.default, pths);
                 if (!fs_1.existsSync(assetPath)) {
-                    request.get({ url: asset.url }).on('response', (resp) => {
+                    request_1.default.get({ url: asset.url }).on('response', (resp) => {
                         if (resp.statusCode === 200) {
                             const pth = assetPath.replace(asset.filename, '');
                             if (!fs_1.existsSync(pth)) {
-                                mkdirp.sync(pth, '0755');
+                                mkdirp_1.default.sync(pth, '0755');
                             }
-                            const localStream = fs_1.createWriteStream(path.join(pth, asset.filename));
+                            const localStream = fs_1.createWriteStream(path_1.default.join(pth, asset.filename));
                             resp.pipe(localStream);
                             localStream.on('close', () => {
                                 logger_1.logger.info(`${asset.uid} Asset downloaded successfully`);
@@ -87,29 +80,28 @@ class FsManager {
     delete(asset) {
         debug('Asset deletion called for', asset);
         return new Promise((resolve, reject) => {
-            try {
-                const assetBasePath = this.assetConfig['asset-connector'].base_dir;
-                const assetsPath = path.join(assetBasePath, asset.locale, 'assets');
-                const assetFolderPath = path.join(assetsPath, asset.uid);
-                if (fs_1.existsSync(assetFolderPath)) {
-                    rimraf_1.default(assetFolderPath, (error) => {
-                        if (error) {
-                            debug('Error while removing', assetFolderPath, 'asset file');
-                            return reject(error);
-                        }
-                        debug('Asset removed successfully');
-                        logger_1.logger.info(`${asset.uid} Asset removed successfully`);
-                        return resolve(asset);
-                    });
-                }
-                else {
-                    debug(`${assetFolderPath} did not exist!`);
+            //try {
+            const assetBasePath = this.assetConfig['asset-connector'].base_dir;
+            const assetsPath = path_1.default.join(assetBasePath, asset.locale, 'assets');
+            const assetFolderPath = path_1.default.join(assetsPath, asset.uid);
+            if (fs_1.existsSync(assetFolderPath)) {
+                rimraf_1.default(assetFolderPath, (error) => {
+                    if (error) {
+                        debug('Error while removing', assetFolderPath, 'asset file');
+                        return reject(error);
+                    }
+                    debug('Asset removed successfully');
+                    logger_1.logger.info(`${asset.uid} Asset removed successfully`);
                     return resolve(asset);
-                }
+                });
             }
-            catch (error) {
-                reject(error);
+            else {
+                debug(`${assetFolderPath} did not exist!`);
+                return resolve(asset);
             }
+            // } catch (error) {
+            //   reject(error);
+            // }
         });
     }
     /**
@@ -119,12 +111,11 @@ class FsManager {
     unpublish(asset) {
         debug('asset unpublished called for', asset);
         return new Promise((resolve, reject) => {
-            try {
-                this.delete(asset).then(resolve).catch(reject);
-            }
-            catch (error) {
-                reject(error);
-            }
+            //try {
+            this.delete(asset).then(resolve).catch(reject);
+            // } catch (error) {
+            //   reject(error);
+            // }
         });
     }
     /**
@@ -133,10 +124,10 @@ class FsManager {
      * @param  {string} pth
      */
     getAssetUrl(assetUrl, pth) {
-        const relativeUrlPrefix = pth.split(path.sep).reverse().slice(0, 2);
+        const relativeUrlPrefix = pth.split(path_1.default.sep).reverse().slice(0, 2);
         const code = relativeUrlPrefix[1].split('-')[0];
-        const url = (code === 'en') ? path.join('/', relativeUrlPrefix[0], assetUrl) :
-            path.join('/', code, relativeUrlPrefix[0], assetUrl);
+        const url = (code === 'en') ? path_1.default.join('/', relativeUrlPrefix[0], assetUrl) :
+            path_1.default.join('/', code, relativeUrlPrefix[0], assetUrl);
         return url;
     }
     /**
@@ -153,12 +144,8 @@ class FsManager {
             else if (asset[keys[a]]) {
                 values.push(asset[keys[a]]);
             }
-            else {
-                debug(`key is undefined`);
-            }
         }
         return values;
     }
 }
 exports.FsManager = FsManager;
-//# sourceMappingURL=filesystem.js.map

@@ -39,4 +39,3 @@ const validateLogger = (instance) => {
     });
     return !flag;
 };
-//# sourceMappingURL=logger.js.map
