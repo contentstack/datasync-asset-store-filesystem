@@ -80,28 +80,29 @@ class FsManager {
     delete(asset) {
         debug('Asset deletion called for', asset);
         return new Promise((resolve, reject) => {
-            //try {
-            const assetBasePath = this.assetConfig['asset-connector'].base_dir;
-            const assetsPath = path_1.default.join(assetBasePath, asset.locale, 'assets');
-            const assetFolderPath = path_1.default.join(assetsPath, asset.uid);
-            if (fs_1.existsSync(assetFolderPath)) {
-                rimraf_1.default(assetFolderPath, (error) => {
-                    if (error) {
-                        debug('Error while removing', assetFolderPath, 'asset file');
-                        return reject(error);
-                    }
-                    debug('Asset removed successfully');
-                    logger_1.logger.info(`${asset.uid} Asset removed successfully`);
+            try {
+                const assetBasePath = this.assetConfig['asset-connector'].base_dir;
+                const assetsPath = path_1.default.join(assetBasePath, asset.locale, 'assets');
+                const assetFolderPath = path_1.default.join(assetsPath, asset.uid);
+                if (fs_1.existsSync(assetFolderPath)) {
+                    rimraf_1.default(assetFolderPath, (error) => {
+                        if (error) {
+                            debug('Error while removing', assetFolderPath, 'asset file');
+                            return reject(error);
+                        }
+                        debug('Asset removed successfully');
+                        logger_1.logger.info(`${asset.uid} Asset removed successfully`);
+                        return resolve(asset);
+                    });
+                }
+                else {
+                    debug(`${assetFolderPath} did not exist!`);
                     return resolve(asset);
-                });
+                }
             }
-            else {
-                debug(`${assetFolderPath} did not exist!`);
-                return resolve(asset);
+            catch (error) {
+                reject(error);
             }
-            // } catch (error) {
-            //   reject(error);
-            // }
         });
     }
     /**
@@ -111,11 +112,12 @@ class FsManager {
     unpublish(asset) {
         debug('asset unpublished called for', asset);
         return new Promise((resolve, reject) => {
-            //try {
-            this.delete(asset).then(resolve).catch(reject);
-            // } catch (error) {
-            //   reject(error);
-            // }
+            try {
+                this.delete(asset).then(resolve).catch(reject);
+            }
+            catch (error) {
+                reject(error);
+            }
         });
     }
     /**
