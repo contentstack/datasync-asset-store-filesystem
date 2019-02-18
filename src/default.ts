@@ -6,8 +6,8 @@
 */
 
 export const defaultConfig = {
-  'asset-connector': {
-    base_dir: './_contents',
+  'assetStore': {
+    baseDir: './_contents',
     pattern: '/assets/:uid/:filename'
   },
 };

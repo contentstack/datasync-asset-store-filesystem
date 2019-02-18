@@ -28,7 +28,7 @@ class FsManager {
         debug('Asset download called for', assetData);
         return new Promise((resolve, reject) => {
             try {
-                const assetBasePath = this.assetConfig['asset-connector'].base_dir;
+                const assetBasePath = this.assetConfig['assetStore'].baseDir;
                 const assetsPath = path_1.default.join(assetBasePath, assetData.locale, 'assets');
                 const asset = assetData.data;
                 if (!fs_1.existsSync(assetsPath)) {
@@ -81,7 +81,7 @@ class FsManager {
         debug('Asset deletion called for', asset);
         return new Promise((resolve, reject) => {
             try {
-                const assetBasePath = this.assetConfig['asset-connector'].base_dir;
+                const assetBasePath = this.assetConfig['assetStore'].baseDir;
                 const assetsPath = path_1.default.join(assetBasePath, asset.locale, 'assets');
                 const assetFolderPath = path_1.default.join(assetsPath, asset.uid);
                 if (fs_1.existsSync(assetFolderPath)) {

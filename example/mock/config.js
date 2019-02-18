@@ -3,10 +3,10 @@ module.exports = {
     apiKey: 'bltd1343376dfba54d2',
     token: 'cs12363bf3654a9b1dbf15a590'
   },
-  'content-connector': {
+  'contentStore': {
 
   },
-  'asset-connector': {
+  'assetStore': {
 
   },
   listener: {
