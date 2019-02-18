@@ -9,8 +9,6 @@ const debug_1 = require("debug");
 const lodash_1 = require("lodash");
 const default_1 = require("./default");
 const filesystem_1 = require("./filesystem");
-const logger_1 = require("./logger");
-exports.setLogger = logger_1.setLogger;
 let connector;
 const debug = debug_1.debug('asset-store-filesystem');
 /**
@@ -18,10 +16,7 @@ const debug = debug_1.debug('asset-store-filesystem');
  * @param  {Object} config: configs
  * @param  {Object} logger: logger instance
  */
-function start(config, logger) {
-    if (logger) {
-        logger_1.setLogger(logger);
-    }
+function start(config) {
     return new Promise((resolve, reject) => {
         try {
             config = (config) ? lodash_1.merge(default_1.defaultConfig, config) : default_1.defaultConfig;

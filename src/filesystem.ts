@@ -10,7 +10,6 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 import request from 'request';
 import rimraf from 'rimraf';
-import { logger as log } from './logger';
 
 const debug = Debug('asset-store-filesystem');
 
@@ -28,7 +27,7 @@ export class FsManager {
     debug('Asset download called for', assetData);
     return new Promise((resolve, reject) => {
       try {
-        const assetBasePath: string = this.assetConfig['assetStore'].baseDir;
+        const assetBasePath: string = this.assetConfig.assetStore.baseDir;
         const assetsPath = path.join(assetBasePath, assetData.locale, 'assets');
         const asset = assetData.data;
         if (!existsSync(assetsPath)) {
@@ -39,7 +38,7 @@ export class FsManager {
         asset._internal_url = this.getAssetUrl(pths.join('/'), paths);
         pths.unshift(paths);
         const assetPath = path.join.apply(path, pths);
-        if(!existsSync(assetPath)){
+        if (!existsSync(assetPath)) {
         request.get({ url: asset.url }).on('response', (resp) => {
           if (resp.statusCode === 200) {
             const pth = assetPath.replace(asset.filename, '');
@@ -49,19 +48,16 @@ export class FsManager {
             const localStream = createWriteStream(path.join(pth, asset.filename));
             resp.pipe(localStream);
             localStream.on('close', () => {
-              log.info(`${asset.uid} Asset downloaded successfully`);
               return resolve(assetData);
             });
           } else {
-            log.error(`${asset.uid} Asset download failed`);
             return reject(`${asset.uid} Asset download failed`);
           }
         })
           .on('error', reject)
           .end();
-        }else{
+        } else {
           debug(`Skipping asset download since it is already downloaded and it's present path is ${assetPath} `);
-          log.info(`Skipping asset(${asset.uid}:${asset.filename}) download since it is already present`)
           return resolve(assetData);
         }
       }
@@ -80,7 +76,7 @@ export class FsManager {
 
     return new Promise((resolve, reject) => {
       try {
-        const assetBasePath: string = this.assetConfig['assetStore'].baseDir;
+        const assetBasePath: string = this.assetConfig.assetStore.baseDir;
         const assetsPath = path.join(assetBasePath, asset.locale, 'assets');
         const assetFolderPath = path.join(assetsPath, asset.uid);
         if (existsSync(assetFolderPath)) {
@@ -90,7 +86,6 @@ export class FsManager {
               return reject(error);
             }
             debug('Asset removed successfully');
-            log.info(`${asset.uid} Asset removed successfully`);
             return resolve(asset);
           });
         } else {

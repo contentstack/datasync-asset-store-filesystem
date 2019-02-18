@@ -14,7 +14,6 @@ const mkdirp_1 = __importDefault(require("mkdirp"));
 const path_1 = __importDefault(require("path"));
 const request_1 = __importDefault(require("request"));
 const rimraf_1 = __importDefault(require("rimraf"));
-const logger_1 = require("./logger");
 const debug = debug_1.debug('asset-store-filesystem');
 class FsManager {
     constructor(assetConfig) {
@@ -28,7 +27,7 @@ class FsManager {
         debug('Asset download called for', assetData);
         return new Promise((resolve, reject) => {
             try {
-                const assetBasePath = this.assetConfig['assetStore'].baseDir;
+                const assetBasePath = this.assetConfig.assetStore.baseDir;
                 const assetsPath = path_1.default.join(assetBasePath, assetData.locale, 'assets');
                 const asset = assetData.data;
                 if (!fs_1.existsSync(assetsPath)) {
@@ -49,12 +48,10 @@ class FsManager {
                             const localStream = fs_1.createWriteStream(path_1.default.join(pth, asset.filename));
                             resp.pipe(localStream);
                             localStream.on('close', () => {
-                                logger_1.logger.info(`${asset.uid} Asset downloaded successfully`);
                                 return resolve(assetData);
                             });
                         }
                         else {
-                            logger_1.logger.error(`${asset.uid} Asset download failed`);
                             return reject(`${asset.uid} Asset download failed`);
                         }
                     })
@@ -63,7 +60,6 @@ class FsManager {
                 }
                 else {
                     debug(`Skipping asset download since it is already downloaded and it's present path is ${assetPath} `);
-                    logger_1.logger.info(`Skipping asset(${asset.uid}:${asset.filename}) download since it is already present`);
                     return resolve(assetData);
                 }
             }
@@ -81,7 +77,7 @@ class FsManager {
         debug('Asset deletion called for', asset);
         return new Promise((resolve, reject) => {
             try {
-                const assetBasePath = this.assetConfig['assetStore'].baseDir;
+                const assetBasePath = this.assetConfig.assetStore.baseDir;
                 const assetsPath = path_1.default.join(assetBasePath, asset.locale, 'assets');
                 const assetFolderPath = path_1.default.join(assetsPath, asset.uid);
                 if (fs_1.existsSync(assetFolderPath)) {
@@ -91,7 +87,6 @@ class FsManager {
                             return reject(error);
                         }
                         debug('Asset removed successfully');
-                        logger_1.logger.info(`${asset.uid} Asset removed successfully`);
                         return resolve(asset);
                     });
                 }
