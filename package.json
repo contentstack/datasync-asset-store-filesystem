@@ -15,7 +15,7 @@
     "connector"
   ],
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist coverage",
     "build-ts": "npm run clean && tsc",
     "watch-ts": "npm run clean && tsc -w",
     "test": "jest --coverage",
@@ -39,7 +39,6 @@
     "mkdirp": "^0.5.1",
     "request": "^2.83.0",
     "rimraf": "2.6.2",
-    "winston": "^3.1.0",
     "debug": "^4.1.0"
   },
   "devDependencies": {
