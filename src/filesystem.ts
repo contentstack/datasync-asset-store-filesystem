@@ -106,11 +106,11 @@ export class FsManager {
   public unpublish(asset) {
     debug('asset unpublished called for', asset);
     return new Promise((resolve, reject) => {
-      try {
+     // try {
         this.delete(asset).then(resolve).catch(reject);
-      } catch (error) {
-        reject(error);
-      }
+      // } catch (error) {
+      //   reject(error);
+      // }
     });
   }
 

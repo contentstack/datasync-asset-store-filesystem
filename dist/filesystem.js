@@ -107,12 +107,11 @@ class FsManager {
     unpublish(asset) {
         debug('asset unpublished called for', asset);
         return new Promise((resolve, reject) => {
-            try {
-                this.delete(asset).then(resolve).catch(reject);
-            }
-            catch (error) {
-                reject(error);
-            }
+            // try {
+            this.delete(asset).then(resolve).catch(reject);
+            // } catch (error) {
+            //   reject(error);
+            // }
         });
     }
     /**

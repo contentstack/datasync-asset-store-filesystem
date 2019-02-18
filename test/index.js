@@ -94,11 +94,11 @@ let asset_data3 = {
 	}
 }
 
-let logger = console
+
 describe('# asset test', function () {
 
 	beforeEach(function loadConnector() {
-		assetConnector.start(config, logger)
+		assetConnector.start(config)
 			.then(_connector => {
 				connector = _connector
 			})
