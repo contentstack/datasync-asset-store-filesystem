@@ -6,8 +6,8 @@
 */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultConfig = {
-    'asset-connector': {
-        base_dir: './_contents',
+    'assetStore': {
+        baseDir: './_contents',
         pattern: '/assets/:uid/:filename'
     },
 };

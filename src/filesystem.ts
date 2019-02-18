@@ -28,7 +28,7 @@ export class FsManager {
     debug('Asset download called for', assetData);
     return new Promise((resolve, reject) => {
       try {
-        const assetBasePath: string = this.assetConfig['asset-connector'].base_dir;
+        const assetBasePath: string = this.assetConfig['assetStore'].baseDir;
         const assetsPath = path.join(assetBasePath, assetData.locale, 'assets');
         const asset = assetData.data;
         if (!existsSync(assetsPath)) {
@@ -80,7 +80,7 @@ export class FsManager {
 
     return new Promise((resolve, reject) => {
       try {
-        const assetBasePath: string = this.assetConfig['asset-connector'].base_dir;
+        const assetBasePath: string = this.assetConfig['assetStore'].baseDir;
         const assetsPath = path.join(assetBasePath, asset.locale, 'assets');
         const assetFolderPath = path.join(assetsPath, asset.uid);
         if (existsSync(assetFolderPath)) {
