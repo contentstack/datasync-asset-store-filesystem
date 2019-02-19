@@ -39,7 +39,7 @@ class FsManager {
                 pths.unshift(paths);
                 const assetPath = path_1.default.join.apply(path_1.default, pths);
                 if (!fs_1.existsSync(assetPath)) {
-                    request_1.default.get({ url: asset.url }).on('response', (resp) => {
+                    request_1.default.get({ url: encodeURI(asset.url) }).on('response', (resp) => {
                         if (resp.statusCode === 200) {
                             const pth = assetPath.replace(asset.filename, '');
                             if (!fs_1.existsSync(pth)) {
@@ -107,11 +107,7 @@ class FsManager {
     unpublish(asset) {
         debug('asset unpublished called for', asset);
         return new Promise((resolve, reject) => {
-            // try {
             this.delete(asset).then(resolve).catch(reject);
-            // } catch (error) {
-            //   reject(error);
-            // }
         });
     }
     /**

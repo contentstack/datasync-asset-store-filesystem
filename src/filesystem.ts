@@ -11,6 +11,7 @@ import path from 'path';
 import request from 'request';
 import rimraf from 'rimraf';
 
+
 const debug = Debug('asset-store-filesystem');
 
 export class FsManager {
@@ -39,7 +40,7 @@ export class FsManager {
         pths.unshift(paths);
         const assetPath = path.join.apply(path, pths);
         if (!existsSync(assetPath)) {
-        request.get({ url: asset.url }).on('response', (resp) => {
+        request.get({ url: encodeURI(asset.url) }).on('response', (resp) => {
           if (resp.statusCode === 200) {
             const pth = assetPath.replace(asset.filename, '');
             if (!existsSync(pth)) {
@@ -106,11 +107,7 @@ export class FsManager {
   public unpublish(asset) {
     debug('asset unpublished called for', asset);
     return new Promise((resolve, reject) => {
-     // try {
-        this.delete(asset).then(resolve).catch(reject);
-      // } catch (error) {
-      //   reject(error);
-      // }
+      this.delete(asset).then(resolve).catch(reject);
     });
   }
 
