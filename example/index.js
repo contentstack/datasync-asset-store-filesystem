@@ -22,7 +22,7 @@ data: {
     content_type: 'image/jpeg',
     file_size: '14552',
     tags: [],
-    filename: 'new_blog2.jpg',
+    filename: 'Teilchenmodell_Flüssigkeit.png',
     url:
      'https://images.contentstack.io/v3/assets/bltd1343376dfba54d2/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
     ACL: {},
