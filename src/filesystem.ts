@@ -11,7 +11,6 @@ import path from 'path';
 import request from 'request';
 import rimraf from 'rimraf';
 
-
 const debug = Debug('asset-store-filesystem');
 
 export class FsManager {

@@ -35,11 +35,5 @@ assetConnector.start(config)
 ```
 ### Config
 
-#### 1. type 
-- type of storage for storing the assets. By defaults its value is **filesystem**
-
-#### 2. pattern  
-- pattern for storing the asset the assets. By defaults its value is **/assets/:uid/:filename**
- 
- #### 3. base_dir: 
+ #### 1. baseDir: 
  - file location to store assets. By defaults its value is   **./_contents**
