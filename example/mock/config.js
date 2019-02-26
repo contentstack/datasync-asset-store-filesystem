@@ -1,13 +1,13 @@
 module.exports = {
   contentstack: {
-    apiKey: '***REMOVED***',
-    token: '***REMOVED***'
+    apiKey: '',
+    token: ''
   },
   'contentStore': {
 
   },
   'assetStore': {
-
+    baseDir: '../../../../auth/_contents'
   },
   listener: {
 
