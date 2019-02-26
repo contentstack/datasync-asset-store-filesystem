@@ -7,7 +7,7 @@ module.exports = {
 
   },
   'assetStore': {
-    baseDir: '../../../../auth/_contents'
+    
   },
   listener: {
 
