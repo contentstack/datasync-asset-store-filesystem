@@ -9,6 +9,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug_1 = require("debug");
+const lodash_1 = require("lodash");
 const fs_1 = require("fs");
 const mkdirp_1 = __importDefault(require("mkdirp"));
 const path_1 = __importDefault(require("path"));
@@ -128,13 +129,16 @@ class FsManager {
      */
     urlFromObject(asset) {
         const values = [];
-        const keys = ['uid', 'filename'];
-        for (let a = 0, i = keys.length; a < i; a++) {
-            if (keys[a] === 'uid') {
-                values.push(asset.uid);
+        let keys = ['uid', 'filename'];
+        if (typeof this.assetConfig.assetStore.pattern === "string") {
+            keys = lodash_1.compact(this.assetConfig.assetStore.pattern.split('/:'));
+        }
+        for (let i = 0, keyLength = keys.length; i < keyLength; i++) {
+            if (asset[keys[i]]) {
+                values.push(asset[keys[i]]);
             }
-            else if (asset[keys[a]]) {
-                values.push(asset[keys[a]]);
+            else {
+                throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`);
             }
         }
         return values;
