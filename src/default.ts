@@ -8,5 +8,6 @@
 export const defaultConfig = {
   assetStore: {
     baseDir: './_contents',
+    pattern:  '/:uid/:filename'
   },
 };

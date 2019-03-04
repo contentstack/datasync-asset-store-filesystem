@@ -5,6 +5,7 @@
 */
 
 import { debug as Debug } from 'debug';
+import { compact } from 'lodash';
 import { createWriteStream, existsSync } from 'fs';
 import mkdirp from 'mkdirp';
 import path from 'path';
@@ -129,13 +130,16 @@ export class FsManager {
    */
   private urlFromObject(asset: any) {
     const values: any = [];
-    const keys = ['uid', 'filename'];
-
-    for (let a = 0, i = keys.length; a < i; a++) {
-      if (keys[a] === 'uid') {
-        values.push(asset.uid);
-      } else if (asset[keys[a]]) {
-        values.push(asset[keys[a]]);
+    let keys = ['uid', 'filename']
+    if(typeof this.assetConfig.assetStore.pattern === "string"){
+      keys = compact(this.assetConfig.assetStore.pattern.split('/:'))
+    }
+    
+    for (let i = 0, keyLength = keys.length; i < keyLength; i++) {
+      if (asset[keys[i]]) {
+        values.push(asset[keys[i]])
+      } else {
+        throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
       }
     }
     return values;

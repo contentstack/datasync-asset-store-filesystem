@@ -8,5 +8,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultConfig = {
     assetStore: {
         baseDir: './_contents',
+        pattern: '/:uid/:filename'
     },
 };
