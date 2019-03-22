@@ -1,30 +1,43 @@
+
 [![Contentstack](https://www.contentstack.com/docs/static/images/contentstack.png)](https://www.contentstack.com/)
 
-## Contentstack asset store filesystem
+  
+
+## Contentstack Sync Asset Store Filesystem
 
   
 
-Contentstack is a headless CMS with an API-first approach. It is a CMS that developers can use to build powerful cross-platform applications in their favorite languages. Build your application frontend, and Contentstack will take care of the rest. [Read More](https://www.contentstack.com/).
+This module is basically a Filesystem database where the Sync Manager stores the most recent version of assets. When the Sync Manager syncs with the server or any other device where the content is updated, it fetches that asset and places it in the Content Store Filesystem.
 
   
 
-Contentstack provides Webhook listener to get notified when webhook gets triggered. It is build to use along with Contentstack Sync Manager and Contentstack Asset stores and Content stores.
+## Prerequisite
 
   
 
-### Prerequisite
+You need to install Node.js version 8 or above to use the Contentstack webbook listener and register a method which gets called on webhook triggered.
 
   
 
-You need Node.js version 4.4.7 or later installed to use the Contentstack wehbook listener and register a method which gets called on webhook triggered.
+## Working
 
   
 
-### Usage
+[Contentstack Webhook Listener](https://github.com/contentstack/contentstack-content-store-mongodb/blob/master) or your own personalized cron job can be used to invoke the app and sync the data. C[ontentstack Sync Manager](https://github.com/contentstack/contentstack-content-store-mongodb/blob/master) is used to integrate and bind all the modules together. Any publish, unpublish, or delete action performed on assets will be tracked and synced with Filesystem accordingly.
+
+  
+
+## Usage
+
+  
+
+This is how the Filesystem Assetstore connector is defined in the boilerplate:
+
+  
 
 ```js
-const  assetConnector = require('contentstack-asset-store-filesystem')
 
+const  assetConnector = require('contentstack-asset-store-filesystem')
 const  config = require(./config)
 let  connector
 
@@ -32,8 +45,20 @@ assetConnector.start(config)
 .then((_connector) => {
 	connector = _connector
 })
-```
-### Config
 
- #### 1. baseDir: 
- - file location to store assets. By defaults its value is   **./_contents**
+```
+
+  
+
+## Configuration
+
+  
+
+Here is the config table for Contentstack Sync Filesystem Content Store:
+
+  
+|Property  |  DataType|Required|Description|Default|
+|--|--|--|--|--|
+|  asset-store-filesystem.baseDir|string |false|The location of the file for storing the assets|./_contents |
+
+
