@@ -1,5 +1,5 @@
 {
-  "name": "contentstack-asset-store-filesystem",
+  "name": "datasync-asset-store-filesystem",
   "version": "1.0.0",
   "description": "Retrieve asset from sync manager ans store/remove it from filesystem.",
   "main": "./dist",
