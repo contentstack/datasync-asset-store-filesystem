@@ -18,3 +18,8 @@ example
 
 # Node module dependencies
 node_modules
+
+# Others
+.vscode
+package-lock.json
+coverage
