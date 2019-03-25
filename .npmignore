@@ -13,6 +13,9 @@ jest.config.js
 # Data
 _contents
 
+# test
+test
+
 # Samples
 example
 
