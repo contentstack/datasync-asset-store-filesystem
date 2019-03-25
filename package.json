@@ -1,18 +1,18 @@
 {
   "name": "@contentstack/datasync-asset-store-filesystem",
-  "version": "1.0.0",
-  "description": "Retrieve asset from sync manager ans store/remove it from filesystem.",
+  "version": "0.0.1-rc.1",
+  "description": "The module that stores your assets in a Filesystem database after it is fetched from the Contentstack server.",
   "main": "./dist",
   "types": "./typings",
-  "homepage": "https://github.com/contentstack/contentstack-asset-store-filesystem#readme",
+  "homepage": "https://github.com/contentstack/datasync-asset-store-filesystem#readme",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
   "keywords": [
-    "Contentstack",
+    "contentstack",
     "utility",
-    "connector"
+    "datasync"
   ],
   "scripts": {
     "clean": "rimraf dist coverage",
@@ -26,10 +26,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/contentstack/contentstack-asset-store-filesystem"
+    "url": "https://github.com/contentstack/datasync-asset-store-filesystem"
   },
   "bugs": {
-    "url": "https://github.com/contentstack/contentstack-asset-store-filesystem/issues",
+    "url": "https://github.com/contentstack/datasync-asset-store-filesystem/issues",
     "email": "support@contentstack.com"
   },
   "author": "Contentstack LLC <support@contentstack.com>",
