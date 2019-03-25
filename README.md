@@ -23,7 +23,7 @@ The Asset Store Filesystem is one of the modules on Contentstack DataSync. The S
 Node.js 8+
 
 ## Usage
-
+This is how the datasync-asset-store-filesystem is defined in the boilerplate:
   
 ```js
 const assetStore = require('@contentstack/datasync-asset-store-filesystem')// <<--
