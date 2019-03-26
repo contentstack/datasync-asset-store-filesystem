@@ -4,17 +4,11 @@ src
 # Typescript configurations
 tsconfig.json
 
-# Typescript linting
-tslint.json
-
 # Test configurations
 jest.config.js
 
 # Data
 _contents
-
-# test
-test
 
 # Samples
 example
