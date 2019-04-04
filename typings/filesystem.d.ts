@@ -7,19 +7,28 @@ export declare class FsManager {
     private config;
     constructor(config: any);
     /**
-     * @description to download the acutal asset and store it in fileystem
-     * @param  {object} assetData: asset data
+     * @public
+     * @method download
+     * @description Downloads the asset object onto local fs
+     * @param  {object} input Asset object details
+     * @returns {Promise} returns the asset object, if successful.
      */
     download(input: any): Promise<{}>;
     private extractFolderPaths;
     /**
-     * @description to delete the asset from the filesystem
-     * @param  {object} asset: asset data
+     * @public
+     * @method delete
+     * @description Delete the asset from fs db
+     * @param  {object} asset Asset to be deleted
+     * @returns {Promise} returns the asset object, if successful.
      */
     delete(asset: any): Promise<{}>;
     /**
-     * @description to unpublish the asset from the filesystem
-     * @param  {object} asset asset data
+     * @public
+     * @method unpublish
+     * @description Unpublish the asset from filesystem
+     * @param  {object} asset Asset to be unpublished
+     * @returns {Promise} returns the asset object, if successful.
      */
     unpublish(asset: any): Promise<{}>;
 }
