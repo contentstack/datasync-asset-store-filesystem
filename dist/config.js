@@ -7,8 +7,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultConfig = {
     assetStore: {
-        assetFolderPrefixKey: 'assets',
-        baseDir: './_contents',
-        pattern: '/:uid/:filename',
+        // optional prefixing of asset in internal urls
+        // assetFolderPrefixKey: 'dev-assets',
+        baseDir: '_contents/:locale',
+        pattern: '/assets/:uid/:filename',
     },
 };

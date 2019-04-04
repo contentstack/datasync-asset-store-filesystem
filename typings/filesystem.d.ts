@@ -14,7 +14,7 @@ export declare class FsManager {
      * @returns {Promise} returns the asset object, if successful.
      */
     download(input: any): Promise<{}>;
-    private extractFolderPaths;
+    private extractDetails;
     /**
      * @public
      * @method delete

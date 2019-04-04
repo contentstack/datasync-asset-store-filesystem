@@ -7,7 +7,7 @@
 import { debug as Debug } from 'debug';
 import { createWriteStream, existsSync } from 'fs';
 import { compact } from 'lodash';
-import { join, sep } from 'path';
+import { join, resolve as resolvePath, sep } from 'path';
 import mkdirp from 'mkdirp';
 import request from 'request';
 import rimraf from 'rimraf';
@@ -32,7 +32,8 @@ export class FsManager {
 
   constructor(config) {
     this.config = config.assetStore;
-    this.config.keys = compact(this.config.pattern.split('/:'));
+    this.config.folderPathKeys = compact(this.config.baseDir.split(sep)).concat(compact(this.config.pattern.split(sep)))
+    this.config.internalUrlKeys = compact(this.config.pattern.split(sep));
   }
 
   /**
@@ -57,18 +58,20 @@ export class FsManager {
                 const attachment = resp.headers['content-disposition'];
                 asset.filename = decodeURIComponent(attachment.split('=')[1]);
               }
+              
+              const internalUrlKeys = this.extractDetails('internal', asset)
+              // <prefix>/bltxyc123/abcd.jpg
+              asset._internal_url = join.apply(this, internalUrlKeys)
 
               // [<prefix?>, 'uid', 'filename']
-              const filePathArray = this.extractFolderPaths(asset)
+              const filePathArray = this.extractDetails('file', asset)
               // [<prefix?>, 'uid']
-              const folderPathArray = Object.assign({}, filePathArray)
-              folderPathArray.splice(folderPathArray.length - 1, 1)
+              const folderPathArray = Object.assign([], filePathArray)
+              folderPathArray.splice(folderPathArray.length - 1)
 
-              // <prefix>/bltxyc123/abcd.jpg
-              const filePath = join.apply(this, filePathArray)
               // <prefix>/bltxyc123
-              const folderPath = join.apply(this, folderPathArray)
-              asset._internal_url = filePath
+              const folderPath = resolvePath(join.apply(this, folderPathArray))
+              const filePath = resolvePath(join.apply(this, filePathArray))
 
               // blocking!
               if (!existsSync(folderPath)) {
@@ -92,9 +95,15 @@ export class FsManager {
     });
   }
 
-  private extractFolderPaths(asset: IAsset) {
+  private extractDetails(type, asset: IAsset) {
     const values: any = []
-    const keys = this.config.keys
+    let keys: string[]
+
+    if (type === 'internal') {
+      keys = this.config.internalUrlKeys
+    } else {
+      keys = this.config.folderPathKeys
+    }
 
     if (this.config.assetFolderPrefixKey && typeof this.config.assetFolderPrefixKey === 'string') {
       values.push(this.config.assetFolderPrefixKey)
@@ -119,10 +128,15 @@ export class FsManager {
     debug(`extracting asset url from: ${JSON.stringify(asset)}.\nKeys expected from this asset are: ${JSON.stringify(keys)}`)
 
     for (let i = 0, keyLength = keys.length; i < keyLength; i++) {
-      if (asset[keys[i]]) {
-        values.push(asset[keys[i]])
+      if (keys[i].charAt(0) === ':') {
+        const k = keys[i].substring(1)
+        if (asset[k]) {
+          values.push(asset[k])
+        } else {
+          throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
+        }
       } else {
-        throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
+        values.push(keys[i])
       }
     }
 
@@ -142,10 +156,10 @@ export class FsManager {
     return new Promise((resolve, reject) => {
       try {
         // add asset structure validations
-        const filePathArray = asset._internal_url.split(this.config.seperator || sep)
-        filePathArray.splice(filePathArray.length - 1)
-        const folderPathArray = filePathArray
-        const folderPath = join.apply(this, folderPathArray)
+        const folderPathArray = this.extractDetails('file', asset)
+        folderPathArray.splice(folderPathArray.length - 1, 1)
+
+        const folderPath = resolvePath(join.apply(this, folderPathArray))
         if (existsSync(folderPath)) {
 
           return rimraf(folderPath, (error) => {
@@ -181,7 +195,8 @@ export class FsManager {
     return new Promise((resolve, reject) => {
       try {
         // add asset structure validations
-        const filePath = asset._internal_url
+        const filePathArray = this.extractDetails('file', asset)
+        const filePath = resolvePath(join.apply(this, filePathArray))
 
         if (existsSync(filePath)) {
           
