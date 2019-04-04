@@ -6,7 +6,7 @@
 
 import { debug as Debug } from 'debug';
 import { merge } from 'lodash';
-import { defaultConfig } from './default';
+import { defaultConfig } from './config';
 import { FsManager } from './filesystem';
 
 let connector;

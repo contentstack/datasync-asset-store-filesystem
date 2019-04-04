@@ -7,6 +7,7 @@
 
 export const defaultConfig = {
   assetStore: {
+    assetFolderPrefixKey: 'assets',
     baseDir: './_contents',
     pattern:  '/:uid/:filename'
   },
