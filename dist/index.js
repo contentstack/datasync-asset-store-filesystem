@@ -7,7 +7,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug_1 = require("debug");
 const lodash_1 = require("lodash");
-const default_1 = require("./default");
+const config_1 = require("./config");
 const filesystem_1 = require("./filesystem");
 let connector;
 const debug = debug_1.debug('asset-store-filesystem');
@@ -19,7 +19,7 @@ const debug = debug_1.debug('asset-store-filesystem');
 function start(config) {
     return new Promise((resolve, reject) => {
         try {
-            config = (config) ? lodash_1.merge(default_1.defaultConfig, config) : default_1.defaultConfig;
+            config = (config) ? lodash_1.merge(config_1.defaultConfig, config) : config_1.defaultConfig;
             connector = new filesystem_1.FsManager(config);
             return resolve(connector);
         }

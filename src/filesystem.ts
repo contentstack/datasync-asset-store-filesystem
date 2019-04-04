@@ -5,69 +5,119 @@
 */
 
 import { debug as Debug } from 'debug';
-import { compact } from 'lodash';
 import { createWriteStream, existsSync } from 'fs';
+import { compact } from 'lodash';
+import { join, sep } from 'path';
 import mkdirp from 'mkdirp';
-import path from 'path';
 import request from 'request';
 import rimraf from 'rimraf';
 
 const debug = Debug('asset-store-filesystem');
 
-export class FsManager {
-  private assetConfig;
+interface IAsset {
+  url: string,
+  uid: string,
+  _internal_url: string,
+  apiVersion?: string,
+  apiKey?: string,
+  downloadId?: string,
+  filename?: string,
+  title?: string,
+  download_id?: string,
+  locale?: string
+}
 
-  constructor(assetConfig) {
-    this.assetConfig = assetConfig;
+export class FsManager {
+  private config: any;
+
+  constructor(config) {
+    this.config = config.assetStore;
+    this.config.keys = compact(this.config.pattern.split('/:'));
   }
+
   /**
    * @description to download the acutal asset and store it in fileystem
    * @param  {object} assetData: asset data
    */
-  public download(assetData) {
-    debug('Asset download called for', assetData);
+  public download(input) {
+    debug('Asset download invoked ' + JSON.stringify(input));
+    const asset = input.data
     return new Promise((resolve, reject) => {
       try {
-        const assetBasePath: string = this.assetConfig.assetStore.baseDir;
-        const assetsPath = path.join(assetBasePath, assetData.locale, 'assets');
-        const asset = assetData.data;
-        if (!existsSync(assetsPath)) {
-          mkdirp.sync(assetsPath, '0755');
-        }
-        const paths = assetsPath;
-        const pths = this.urlFromObject(asset);
-        asset._internal_url = this.getAssetUrl(pths.join('/'), paths);
-        pths.unshift(paths);
-        const assetPath = path.join.apply(path, pths);
-        if (!existsSync(assetPath)) {
-        request.get({ url: encodeURI(asset.url) }).on('response', (resp) => {
-          if (resp.statusCode === 200) {
-            const pth = assetPath.replace(asset.filename, '');
-            if (!existsSync(pth)) {
-              mkdirp.sync(pth, '0755');
+        request.get({ url: encodeURI(asset.url) })
+          .on('response', (resp) => {
+            if (resp.statusCode === 200) {
+              if (asset.hasOwnProperty('download_id')) {
+                const attachment = resp.headers['content-disposition'];
+                asset.filename = decodeURIComponent(attachment.split('=')[1]);
+              }
+
+              // [<prefix?>, 'uid', 'filename']
+              const pathArray = this.extractFolderPaths(asset)
+              const folderPathArray = pathArray.splice(pathArray.length - 1, 1)
+              const folderPath = join.apply(folderPathArray)
+              // <prefix>/bltxyc123/abcd.jpg
+              const filePath = join.apply(this, pathArray)
+              asset._internal_url = filePath
+
+              if (!existsSync(folderPath)) {
+                mkdirp.sync(folderPath, '0755');
+              }
+              const localStream = createWriteStream(filePath);
+              resp.pipe(localStream);
+              localStream.on('close', () => {
+                return resolve(input);
+              });
+            } else {
+              return reject(`Failed to download asset ${JSON.stringify(asset)}`);
             }
-            const localStream = createWriteStream(path.join(pth, asset.filename));
-            resp.pipe(localStream);
-            localStream.on('close', () => {
-              return resolve(assetData);
-            });
-          } else {
-            return reject(`${asset.uid} Asset download failed`);
-          }
-        })
+          })
           .on('error', reject)
           .end();
-        } else {
-          debug(`Skipping asset download since it is already downloaded and it's present path is ${assetPath} `);
-          return resolve(assetData);
-        }
-      }
-      catch (error) {
-        debug(`${assetData.data.uid} Asset download failed`);
-        reject(error);
+      } catch (error) {
+        debug(`${asset.data.uid} asset download failed`);
+        return reject(error);
       }
     });
   }
+
+  private extractFolderPaths(asset: IAsset) {
+    const values: any = []
+    const keys = this.config.keys
+
+    if (this.config.assetFolderPrefixKey && typeof this.config.assetFolderPrefixKey === 'string') {
+      values.push(this.config.assetFolderPrefixKey)
+    }
+
+    const regexp = new RegExp('https://(assets|images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g')
+    let matches
+
+    while ((matches = regexp.exec(asset.url)) !== null) {
+      if (matches && matches.length) {
+        if (matches[2]) {
+          asset.apiVersion = matches[2]
+        }
+        if (matches[3]) {
+          asset.apiKey = matches[3]
+        }
+        if (matches[4]) {
+          asset.downloadId = matches[4]
+        }
+      }
+    }
+    debug(`extracting asset url from: ${JSON.stringify(asset)}.\nKeys expected from this asset are: ${JSON.stringify(keys)}`)
+
+    for (let i = 0, keyLength = keys.length; i < keyLength; i++) {
+      if (asset[keys[i]]) {
+        values.push(asset[keys[i]])
+      } else {
+        throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
+      }
+    }
+
+    return values
+  }
+
   /**
    * @description to delete the asset from the filesystem
    * @param  {object} asset: asset data
@@ -77,71 +127,62 @@ export class FsManager {
 
     return new Promise((resolve, reject) => {
       try {
-        const assetBasePath: string = this.assetConfig.assetStore.baseDir;
-        const assetsPath = path.join(assetBasePath, asset.locale, 'assets');
-        const assetFolderPath = path.join(assetsPath, asset.uid);
-        if (existsSync(assetFolderPath)) {
-          rimraf(assetFolderPath, (error) => {
+        const filePathArray = asset._internal_url.split(sep)
+        filePathArray.splice(filePathArray.length - 1)
+        const folderPathArray = filePathArray
+        const folderPath = join.apply(this, folderPathArray)
+        if (existsSync(folderPath)) {
+
+          return rimraf(folderPath, (error) => {
             if (error) {
-              debug('Error while removing', assetFolderPath, 'asset file');
+              debug(`Error while removing ${folderPath} asset file`);
+
               return reject(error);
             }
-            debug('Asset removed successfully');
+
             return resolve(asset);
           });
         } else {
-          debug(`${assetFolderPath} did not exist!`);
+          debug(`${folderPath} did not exist!`);
+
           return resolve(asset);
         }
       } catch (error) {
-        reject(error);
+        return reject(error);
       }
     });
-
   }
+
   /**
    * @description to unpublish the asset from the filesystem
-   * @param  {object} asset: asset data
+   * @param  {object} asset asset data
    */
-
   public unpublish(asset) {
-    debug('asset unpublished called for', asset);
+    debug(`Asset unpublish called ${JSON.stringify(asset.data)}`);
+
     return new Promise((resolve, reject) => {
-      this.delete(asset).then(resolve).catch(reject);
-    });
-  }
+      try {
+        const filePath = asset._internal_url
 
-  /**
-   * @description Generate the full assets url for the given url
-   * @param  {string} assetUrl
-   * @param  {string} pth
-   */
-  private getAssetUrl(assetUrl, pth) {
-    const relativeUrlPrefix = pth.split(path.sep).reverse().slice(0, 2);
-    const code = relativeUrlPrefix[1].split('-')[0];
-    const url = (code === 'en') ? path.join('/', relativeUrlPrefix[0], assetUrl) :
-      path.join('/', code, relativeUrlPrefix[0], assetUrl);
-    return url;
-  }
+        if (existsSync(filePath)) {
+          
+          return rimraf(filePath, (error) => {
+            if (error) {
+              debug(`Error while removing ${filePath} asset file`);
 
-  /**
-   * @description Used to generate asset path from keys using asset
-   * @param  {any} asset: asset data
-   */
-  private urlFromObject(asset: any) {
-    const values: any = [];
-    let keys = ['uid', 'filename']
-    if(typeof this.assetConfig.assetStore.pattern === "string"){
-      keys = compact(this.assetConfig.assetStore.pattern.split('/:'))
-    }
-    
-    for (let i = 0, keyLength = keys.length; i < keyLength; i++) {
-      if (asset[keys[i]]) {
-        values.push(asset[keys[i]])
-      } else {
-        throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
+              return reject(error);
+            }
+
+            return resolve(asset);
+          });
+        } else {
+          debug(`${filePath} did not exist!`);
+
+          return resolve(asset);
+        }
+      } catch (error) {
+        return reject(error);
       }
-    }
-    return values;
+    });
   }
 }

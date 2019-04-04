@@ -4,13 +4,14 @@
 * MIT Licensed
 */
 export declare class FsManager {
-    private assetConfig;
-    constructor(assetConfig: any);
+    private config;
+    constructor(config: any);
     /**
      * @description to download the acutal asset and store it in fileystem
      * @param  {object} assetData: asset data
      */
-    download(assetData: any): Promise<{}>;
+    download(input: any): Promise<{}>;
+    private extractFolderPaths;
     /**
      * @description to delete the asset from the filesystem
      * @param  {object} asset: asset data
@@ -18,18 +19,7 @@ export declare class FsManager {
     delete(asset: any): Promise<{}>;
     /**
      * @description to unpublish the asset from the filesystem
-     * @param  {object} asset: asset data
+     * @param  {object} asset asset data
      */
     unpublish(asset: any): Promise<{}>;
-    /**
-     * @description Generate the full assets url for the given url
-     * @param  {string} assetUrl
-     * @param  {string} pth
-     */
-    private getAssetUrl;
-    /**
-     * @description Used to generate asset path from keys using asset
-     * @param  {any} asset: asset data
-     */
-    private urlFromObject;
 }
