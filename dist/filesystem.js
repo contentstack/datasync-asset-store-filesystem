@@ -19,7 +19,8 @@ const debug = debug_1.debug('asset-store-filesystem');
 class FsManager {
     constructor(config) {
         this.config = config.assetStore;
-        this.config.keys = lodash_1.compact(this.config.pattern.split('/:'));
+        this.config.folderPathKeys = lodash_1.compact(this.config.baseDir.split(path_1.sep)).concat(lodash_1.compact(this.config.pattern.split(path_1.sep)));
+        this.config.internalUrlKeys = lodash_1.compact(this.config.pattern.split(path_1.sep));
     }
     /**
      * @public
@@ -43,16 +44,17 @@ class FsManager {
                             const attachment = resp.headers['content-disposition'];
                             asset.filename = decodeURIComponent(attachment.split('=')[1]);
                         }
-                        // [<prefix?>, 'uid', 'filename']
-                        const filePathArray = this.extractFolderPaths(asset);
-                        // [<prefix?>, 'uid']
-                        const folderPathArray = Object.assign({}, filePathArray);
-                        folderPathArray.splice(folderPathArray.length - 1, 1);
+                        const internalUrlKeys = this.extractDetails('internal', asset);
                         // <prefix>/bltxyc123/abcd.jpg
-                        const filePath = path_1.join.apply(this, filePathArray);
+                        asset._internal_url = path_1.join.apply(this, internalUrlKeys);
+                        // [<prefix?>, 'uid', 'filename']
+                        const filePathArray = this.extractDetails('file', asset);
+                        // [<prefix?>, 'uid']
+                        const folderPathArray = Object.assign([], filePathArray);
+                        folderPathArray.splice(folderPathArray.length - 1);
                         // <prefix>/bltxyc123
-                        const folderPath = path_1.join.apply(this, folderPathArray);
-                        asset._internal_url = filePath;
+                        const folderPath = path_1.resolve(path_1.join.apply(this, folderPathArray));
+                        const filePath = path_1.resolve(path_1.join.apply(this, filePathArray));
                         // blocking!
                         if (!fs_1.existsSync(folderPath)) {
                             mkdirp_1.default.sync(folderPath, '0755');
@@ -76,9 +78,15 @@ class FsManager {
             }
         });
     }
-    extractFolderPaths(asset) {
+    extractDetails(type, asset) {
         const values = [];
-        const keys = this.config.keys;
+        let keys;
+        if (type === 'internal') {
+            keys = this.config.internalUrlKeys;
+        }
+        else {
+            keys = this.config.folderPathKeys;
+        }
         if (this.config.assetFolderPrefixKey && typeof this.config.assetFolderPrefixKey === 'string') {
             values.push(this.config.assetFolderPrefixKey);
         }
@@ -99,11 +107,17 @@ class FsManager {
         }
         debug(`extracting asset url from: ${JSON.stringify(asset)}.\nKeys expected from this asset are: ${JSON.stringify(keys)}`);
         for (let i = 0, keyLength = keys.length; i < keyLength; i++) {
-            if (asset[keys[i]]) {
-                values.push(asset[keys[i]]);
+            if (keys[i].charAt(0) === ':') {
+                const k = keys[i].substring(1);
+                if (asset[k]) {
+                    values.push(asset[k]);
+                }
+                else {
+                    throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`);
+                }
             }
             else {
-                throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`);
+                values.push(keys[i]);
             }
         }
         return values;
@@ -120,10 +134,9 @@ class FsManager {
         return new Promise((resolve, reject) => {
             try {
                 // add asset structure validations
-                const filePathArray = asset._internal_url.split(this.config.seperator || path_1.sep);
-                filePathArray.splice(filePathArray.length - 1);
-                const folderPathArray = filePathArray;
-                const folderPath = path_1.join.apply(this, folderPathArray);
+                const folderPathArray = this.extractDetails('file', asset);
+                folderPathArray.splice(folderPathArray.length - 1, 1);
+                const folderPath = path_1.resolve(path_1.join.apply(this, folderPathArray));
                 if (fs_1.existsSync(folderPath)) {
                     return rimraf_1.default(folderPath, (error) => {
                         if (error) {
@@ -155,7 +168,8 @@ class FsManager {
         return new Promise((resolve, reject) => {
             try {
                 // add asset structure validations
-                const filePath = asset._internal_url;
+                const filePathArray = this.extractDetails('file', asset);
+                const filePath = path_1.resolve(path_1.join.apply(this, filePathArray));
                 if (fs_1.existsSync(filePath)) {
                     return rimraf_1.default(filePath, (error) => {
                         if (error) {
