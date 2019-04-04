@@ -22,15 +22,21 @@ class FsManager {
         this.config.keys = lodash_1.compact(this.config.pattern.split('/:'));
     }
     /**
-     * @description to download the acutal asset and store it in fileystem
-     * @param  {object} assetData: asset data
+     * @public
+     * @method download
+     * @description Downloads the asset object onto local fs
+     * @param  {object} input Asset object details
+     * @returns {Promise} returns the asset object, if successful.
      */
     download(input) {
         debug('Asset download invoked ' + JSON.stringify(input));
         const asset = input.data;
         return new Promise((resolve, reject) => {
             try {
-                request_1.default.get({ url: encodeURI(asset.url) })
+                // Move utility calculations to a utility file
+                // Primaries in teh file: download, unpublish, delete
+                // add asset structure validations
+                return request_1.default.get({ url: encodeURI(asset.url) })
                     .on('response', (resp) => {
                     if (resp.statusCode === 200) {
                         if (asset.hasOwnProperty('download_id')) {
@@ -38,12 +44,16 @@ class FsManager {
                             asset.filename = decodeURIComponent(attachment.split('=')[1]);
                         }
                         // [<prefix?>, 'uid', 'filename']
-                        const pathArray = this.extractFolderPaths(asset);
-                        const folderPathArray = pathArray.splice(pathArray.length - 1, 1);
-                        const folderPath = path_1.join.apply(folderPathArray);
+                        const filePathArray = this.extractFolderPaths(asset);
+                        // [<prefix?>, 'uid']
+                        const folderPathArray = Object.assign({}, filePathArray);
+                        folderPathArray.splice(folderPathArray.length - 1, 1);
                         // <prefix>/bltxyc123/abcd.jpg
-                        const filePath = path_1.join.apply(this, pathArray);
+                        const filePath = path_1.join.apply(this, filePathArray);
+                        // <prefix>/bltxyc123
+                        const folderPath = path_1.join.apply(this, folderPathArray);
                         asset._internal_url = filePath;
+                        // blocking!
                         if (!fs_1.existsSync(folderPath)) {
                             mkdirp_1.default.sync(folderPath, '0755');
                         }
@@ -99,14 +109,18 @@ class FsManager {
         return values;
     }
     /**
-     * @description to delete the asset from the filesystem
-     * @param  {object} asset: asset data
+     * @public
+     * @method delete
+     * @description Delete the asset from fs db
+     * @param  {object} asset Asset to be deleted
+     * @returns {Promise} returns the asset object, if successful.
      */
     delete(asset) {
         debug('Asset deletion called for', asset);
         return new Promise((resolve, reject) => {
             try {
-                const filePathArray = asset._internal_url.split(path_1.sep);
+                // add asset structure validations
+                const filePathArray = asset._internal_url.split(this.config.seperator || path_1.sep);
                 filePathArray.splice(filePathArray.length - 1);
                 const folderPathArray = filePathArray;
                 const folderPath = path_1.join.apply(this, folderPathArray);
@@ -130,13 +144,17 @@ class FsManager {
         });
     }
     /**
-     * @description to unpublish the asset from the filesystem
-     * @param  {object} asset asset data
+     * @public
+     * @method unpublish
+     * @description Unpublish the asset from filesystem
+     * @param  {object} asset Asset to be unpublished
+     * @returns {Promise} returns the asset object, if successful.
      */
     unpublish(asset) {
         debug(`Asset unpublish called ${JSON.stringify(asset.data)}`);
         return new Promise((resolve, reject) => {
             try {
+                // add asset structure validations
                 const filePath = asset._internal_url;
                 if (fs_1.existsSync(filePath)) {
                     return rimraf_1.default(filePath, (error) => {
@@ -147,10 +165,8 @@ class FsManager {
                         return resolve(asset);
                     });
                 }
-                else {
-                    debug(`${filePath} did not exist!`);
-                    return resolve(asset);
-                }
+                debug(`${filePath} did not exist!`);
+                return resolve(asset);
             }
             catch (error) {
                 return reject(error);

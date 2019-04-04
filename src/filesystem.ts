@@ -36,15 +36,21 @@ export class FsManager {
   }
 
   /**
-   * @description to download the acutal asset and store it in fileystem
-   * @param  {object} assetData: asset data
+   * @public
+   * @method download
+   * @description Downloads the asset object onto local fs
+   * @param  {object} input Asset object details
+   * @returns {Promise} returns the asset object, if successful.
    */
   public download(input) {
     debug('Asset download invoked ' + JSON.stringify(input));
     const asset = input.data
     return new Promise((resolve, reject) => {
       try {
-        request.get({ url: encodeURI(asset.url) })
+        // Move utility calculations to a utility file
+        // Primaries in teh file: download, unpublish, delete
+        // add asset structure validations
+        return request.get({ url: encodeURI(asset.url) })
           .on('response', (resp) => {
             if (resp.statusCode === 200) {
               if (asset.hasOwnProperty('download_id')) {
@@ -53,13 +59,18 @@ export class FsManager {
               }
 
               // [<prefix?>, 'uid', 'filename']
-              const pathArray = this.extractFolderPaths(asset)
-              const folderPathArray = pathArray.splice(pathArray.length - 1, 1)
-              const folderPath = join.apply(folderPathArray)
+              const filePathArray = this.extractFolderPaths(asset)
+              // [<prefix?>, 'uid']
+              const folderPathArray = Object.assign({}, filePathArray)
+              folderPathArray.splice(folderPathArray.length - 1, 1)
+
               // <prefix>/bltxyc123/abcd.jpg
-              const filePath = join.apply(this, pathArray)
+              const filePath = join.apply(this, filePathArray)
+              // <prefix>/bltxyc123
+              const folderPath = join.apply(this, folderPathArray)
               asset._internal_url = filePath
 
+              // blocking!
               if (!existsSync(folderPath)) {
                 mkdirp.sync(folderPath, '0755');
               }
@@ -119,15 +130,19 @@ export class FsManager {
   }
 
   /**
-   * @description to delete the asset from the filesystem
-   * @param  {object} asset: asset data
+   * @public
+   * @method delete
+   * @description Delete the asset from fs db
+   * @param  {object} asset Asset to be deleted
+   * @returns {Promise} returns the asset object, if successful.
    */
   public delete(asset) {
     debug('Asset deletion called for', asset);
 
     return new Promise((resolve, reject) => {
       try {
-        const filePathArray = asset._internal_url.split(sep)
+        // add asset structure validations
+        const filePathArray = asset._internal_url.split(this.config.seperator || sep)
         filePathArray.splice(filePathArray.length - 1)
         const folderPathArray = filePathArray
         const folderPath = join.apply(this, folderPathArray)
@@ -154,14 +169,18 @@ export class FsManager {
   }
 
   /**
-   * @description to unpublish the asset from the filesystem
-   * @param  {object} asset asset data
+   * @public
+   * @method unpublish
+   * @description Unpublish the asset from filesystem
+   * @param  {object} asset Asset to be unpublished
+   * @returns {Promise} returns the asset object, if successful.
    */
   public unpublish(asset) {
     debug(`Asset unpublish called ${JSON.stringify(asset.data)}`);
 
     return new Promise((resolve, reject) => {
       try {
+        // add asset structure validations
         const filePath = asset._internal_url
 
         if (existsSync(filePath)) {
@@ -175,11 +194,10 @@ export class FsManager {
 
             return resolve(asset);
           });
-        } else {
-          debug(`${filePath} did not exist!`);
-
-          return resolve(asset);
         }
+        debug(`${filePath} did not exist!`);
+
+        return resolve(asset);
       } catch (error) {
         return reject(error);
       }
