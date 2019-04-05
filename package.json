@@ -1,12 +1,14 @@
 {
   "name": "@contentstack/datasync-asset-store-filesystem",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The module that stores your assets in a Filesystem database after it is fetched from the Contentstack server.",
   "main": "./dist",
   "types": "./typings",
   "homepage": "https://www.contentstack.com/docs/guide/synchronization/contentstack-datasync",
   "directories": {
-    "lib": "lib",
+    "doc": "README.md",
+    "example": "example",
+    "lib": "src",
     "test": "test"
   },
   "keywords": [
