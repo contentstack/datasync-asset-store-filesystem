@@ -29,9 +29,8 @@ class FsManager {
      * @param  {object} input Asset object details
      * @returns {Promise} returns the asset object, if successful.
      */
-    download(input) {
-        debug('Asset download invoked ' + JSON.stringify(input));
-        const asset = input.data;
+    download(asset) {
+        debug('Asset download invoked ' + JSON.stringify(asset));
         return new Promise((resolve, reject) => {
             try {
                 // Move utility calculations to a utility file
@@ -62,7 +61,7 @@ class FsManager {
                         const localStream = fs_1.createWriteStream(filePath);
                         resp.pipe(localStream);
                         localStream.on('close', () => {
-                            return resolve(input);
+                            return resolve(asset);
                         });
                     }
                     else {
@@ -73,7 +72,7 @@ class FsManager {
                     .end();
             }
             catch (error) {
-                debug(`${asset.data.uid} asset download failed`);
+                debug(`${asset.uid} asset download failed`);
                 return reject(error);
             }
         });
@@ -164,7 +163,7 @@ class FsManager {
      * @returns {Promise} returns the asset object, if successful.
      */
     unpublish(asset) {
-        debug(`Asset unpublish called ${JSON.stringify(asset.data)}`);
+        debug(`Asset unpublish called ${JSON.stringify(asset)}`);
         return new Promise((resolve, reject) => {
             try {
                 // add asset structure validations
