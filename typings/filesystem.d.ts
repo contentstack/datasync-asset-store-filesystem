@@ -10,11 +10,10 @@ export declare class FsManager {
      * @public
      * @method download
      * @description Downloads the asset object onto local fs
-     * @param  {object} input Asset object details
+     * @param  {object} asset Asset object details
      * @returns {Promise} returns the asset object, if successful.
      */
-    download(input: any): Promise<{}>;
-    private extractDetails;
+    download(asset: any): Promise<{}>;
     /**
      * @public
      * @method delete
