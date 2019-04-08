@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const requiredKeysForPublish = ['locale', 'uid'];
+const requiredKeysForPublish = ['url', 'locale', 'uid'];
 const requiredKeysForUnpublish = ['url', 'locale', 'filename', 'uid', '_internal_url'];
 exports.validatePublishAsset = (asset) => {
     requiredKeysForPublish.forEach((key) => {

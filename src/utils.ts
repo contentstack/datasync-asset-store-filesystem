@@ -1,4 +1,4 @@
-const requiredKeysForPublish = ['locale', 'uid']
+const requiredKeysForPublish = ['url', 'locale', 'uid']
 const requiredKeysForUnpublish = ['url', 'locale', 'filename', 'uid', '_internal_url']
 
 
