@@ -45,7 +45,6 @@ export class FsManager {
    * @returns {Promise} returns the asset object, if successful.
    */
   public download(asset) {
-
     debug('Asset download invoked ' + JSON.stringify(asset));
     return new Promise((resolve, reject) => {
       try {
