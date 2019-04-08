@@ -13,7 +13,7 @@ export declare class FsManager {
      * @param  {object} input Asset object details
      * @returns {Promise} returns the asset object, if successful.
      */
-    download(input: any): Promise<{}>;
+    download(asset: any): Promise<{}>;
     private extractDetails;
     /**
      * @public
