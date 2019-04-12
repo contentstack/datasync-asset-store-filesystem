@@ -6,7 +6,7 @@
 
 
 const assetConnector = require('../dist')
-const config = require('../dist/default')
+const config = require('../dist/config')
 const filesystem = require('fs')
 let connector = null
 
@@ -15,85 +15,71 @@ let conf = {
 	"type": "tp"
 }
 
-let asset_data = {
-	content_type_uid: '_assets',
-	action: 'publish',
-	publish_queue_uid: 'bltbbdda2b410005b26a6e6',
-	locale: 'fr-fr',
-	uid: 'blt9c4ef3c49f7b18e9',
-	data: {
-		uid: 'blt9c4ef3c49f7b18e9',
-		created_at: '2018-06-19T12:06:38.066Z',
-		updated_at: '2018-06-19T12:06:38.066Z',
-		created_by: 'blt607b206b64807684',
-		updated_by: 'blt607b206b64807684',
-		content_type: 'image/jpeg',
-		file_size: '14552',
-		tags: [],
-		filename: 'new_blog2.jpg',
-		url: 'https://images.contentstack.io/v3/assets/***REMOVED***/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
-		ACL: {},
-		is_dir: false,
-		_version: 1,
-		title: 'blog2.jpg',
-		force_load: false,
-		content_type_uid: '_assets'
-	}
-}
+let asset_data = 
+ { uid: 'blt9c4ef3c49f7b18e9',
+   created_at: '2018-05-31T13:34:43.674Z',
+   updated_at: '2018-05-31T13:34:43.674Z',
+   created_by: 'blt607b206b64807684',
+   updated_by: 'blt607b206b64807684',
+   content_type: 'image/jpeg',
+   file_size: '6524',
+   tags: [],
+   filename: 'kareena.jpeg',
+   url: 'https://images.contentstack.io/v3/assets/***REMOVED***/bltdada9d78d80177c3/5b0ff9f3dc1dd5cd0f3cad5d/kareena.jpeg',
+   is_dir: false,
+   _version: 1,
+   title: 'kareena.jpeg',
+   _internal_url:'fr-fr/assets/blt9c4ef3c49f7b18e9/kareena.jpeg',
+   publish_details: 
+	{ environment: 'blt7b98b4cea4baeebf',
+	  locale: 'fr-fr',
+	  time: '2018-12-27T06:56:38.608Z',
+	  user: 'blt607b206b64807684' },
+   locale: 'fr-fr' } 
 
+let asset_data2 = 
+ { uid: 'blt9c4ef3c49f7b18h9',
+   created_at: '2018-05-31T13:34:43.674Z',
+   updated_at: '2018-05-31T13:34:43.674Z',
+   created_by: 'blt607b206b64807684',
+   updated_by: 'blt607b206b64807684',
+   content_type: 'image/jpeg',
+   file_size: '6524',
+   tags: [],
+   filename: 'kareena.jpeg',
+   url: 'https://images.contentstack.io/v3/assets/***REMOVED***/bltdada9d78d80177c3/5b0ff9f3dc1dd5cd0f3cad5d/kareena.jpeg',
+   is_dir: false,
+   _version: 1,
+   title: 'kareena.jpeg',
+   _internal_url:'en-us/assets/blt9c4ef3c49f7b18h9/kareena.jpeg',
+   publish_details: 
+	{ environment: 'blt7b98b4cea4baeebf',
+	  locale: 'en-us',
+	  time: '2018-12-27T06:56:38.608Z',
+	  user: 'blt607b206b64807684' },
+   locale: 'en-us' }
 
-let asset_data2 = {
-	content_type_uid: '_assets',
-	action: 'publish',
-	publish_queue_uid: 'bltbbdda2b410005b26a6e6',
-	locale: 'en-us',
-	uid: 'blt9c4ef3c49f7b18h9',
-	data: {
-		uid: 'blt9c4ef3c49f7b18h9',
-		created_at: '2018-06-19T12:06:38.066Z',
-		updated_at: '2018-06-19T12:06:38.066Z',
-		created_by: 'blt607b206b64807684',
-		updated_by: 'blt607b206b64807684',
-		content_type: 'image/jpeg',
-		file_size: '14552',
-		tags: [],
-		filename: 'blog1.jpg',
-		url: 'https://images.contentstack.io/v3/assets/dfgdgdgdg/blta8b9d1676a31d361/5c24957dc3cf797d38cca458/cherry-blossom.jpg"',
-		ACL: {},
-		is_dir: false,
-		_version: 1,
-		title: 'blog1.jpg',
-		force_load: false,
-		content_type_uid: '_assets'
-	}
-}
-
-let asset_data3 = {
-	content_type_uid: '_assets',
-	action: 'publish',
-	publish_queue_uid: 'bltbbdda2b410005b26a6e6',
-	locale: 'mr-in',
-	uid: 'blt9c4ef3c49f7b18f9',
-	data: {
-		uid: 'blt9c4ef3c49f7b18f9',
-		created_at: '2018-06-19T12:06:38.066Z',
-		updated_at: '2018-06-19T12:06:38.066Z',
-		created_by: 'blt607b206b64807684',
-		updated_by: 'blt607b206b64807684',
-		content_type: 'image/jpeg',
-		file_size: '14552',
-		tags: [],
-		filename: 'blog3.jpg',
-		url: 'https://images.contentstack.io/v3/assets/***REMOVED***/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
-		ACL: {},
-		is_dir: false,
-		_version: 1,
-		title: 'blog3.jpg',
-		force_load: false,
-		content_type_uid: '_assets'
-	}
-}
-
+let asset_data3 = 
+ { uid: 'blt9c4ef3c49f7b18f9',
+   created_at: '2018-05-31T13:34:43.674Z',
+   updated_at: '2018-05-31T13:34:43.674Z',
+   created_by: 'blt607b206b64807684',
+   updated_by: 'blt607b206b64807684',
+   content_type: 'image/jpeg',
+   file_size: '6524',
+   tags: [],
+   filename: 'kareena.jpeg',
+   url: 'https://images.contentstack.io/v3/assets/***REMOVED***/bltdada9d78d80177c3/5b0ff9f3dc1dd5cd0f3cad5d/kareena.jpeg',
+   is_dir: false,
+   _version: 1,
+   title: 'kareena.jpeg',
+   _internal_url:'mr-in/assets/blt9c4ef3c49f7b18f9/kareena.jpeg',
+   publish_details: 
+	{ environment: 'blt7b98b4cea4baeebf',
+	  locale: 'mr-in',
+	  time: '2018-12-27T06:56:38.608Z',
+	  user: 'blt607b206b64807684' },
+   locale: 'mr-in' }
 
 describe('# asset test', function () {
 
