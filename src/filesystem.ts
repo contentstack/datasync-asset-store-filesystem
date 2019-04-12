@@ -15,16 +15,16 @@ import rimraf from 'rimraf';
 const debug = Debug('asset-store-filesystem');
 
 interface IAsset {
+  locale: string,
   url: string,
   uid: string,
-  _internal_url: string,
+  _internal_url?: string,
   apiVersion?: string,
   apiKey?: string,
+  download_id?: string,
   downloadId?: string,
   filename?: string,
   title?: string,
-  download_id?: string,
-  locale?: string
 }
 
 export class FsManager {
@@ -32,8 +32,8 @@ export class FsManager {
 
   constructor(config) {
     this.config = config.assetStore;
-    this.config.folderPathKeys = compact(this.config.baseDir.split(sep)).concat(compact(this.config.pattern.split(sep)))
-    this.config.internalUrlKeys = compact(this.config.pattern.split(sep));
+    this.config.folderPathKeys = compact(this.config.baseDir.split('/')).concat(compact(this.config.pattern.split('/')))
+    this.config.internalUrlKeys = compact(this.config.pattern.split('/'));
   }
 
   /**
@@ -146,11 +146,12 @@ export class FsManager {
    * @public
    * @method delete
    * @description Delete the asset from fs db
-   * @param  {object} asset Asset to be deleted
+   * @param  {Array} assets Assets to be deleted
    * @returns {Promise} returns the asset object, if successful.
    */
-  public delete(asset) {
-    debug('Asset deletion called for', asset);
+  public delete(assets: IAsset[]) {
+    debug('Asset deletion called for', JSON.stringify(assets));
+    const asset = assets[0]
 
     return new Promise((resolve, reject) => {
       try {
@@ -188,7 +189,7 @@ export class FsManager {
    * @param  {object} asset Asset to be unpublished
    * @returns {Promise} returns the asset object, if successful.
    */
-  public unpublish(asset) {
+  public unpublish(asset: IAsset) {
     debug(`Asset unpublish called ${JSON.stringify(asset)}`);
 
     return new Promise((resolve, reject) => {
