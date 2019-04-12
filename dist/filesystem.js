@@ -19,8 +19,8 @@ const debug = debug_1.debug('asset-store-filesystem');
 class FsManager {
     constructor(config) {
         this.config = config.assetStore;
-        this.config.folderPathKeys = lodash_1.compact(this.config.baseDir.split(path_1.sep)).concat(lodash_1.compact(this.config.pattern.split(path_1.sep)));
-        this.config.internalUrlKeys = lodash_1.compact(this.config.pattern.split(path_1.sep));
+        this.config.folderPathKeys = lodash_1.compact(this.config.baseDir.split('/')).concat(lodash_1.compact(this.config.pattern.split('/')));
+        this.config.internalUrlKeys = lodash_1.compact(this.config.pattern.split('/'));
     }
     /**
      * @public
@@ -125,11 +125,12 @@ class FsManager {
      * @public
      * @method delete
      * @description Delete the asset from fs db
-     * @param  {object} asset Asset to be deleted
+     * @param  {Array} assets Assets to be deleted
      * @returns {Promise} returns the asset object, if successful.
      */
-    delete(asset) {
-        debug('Asset deletion called for', asset);
+    delete(assets) {
+        debug('Asset deletion called for', JSON.stringify(assets));
+        const asset = assets[0];
         return new Promise((resolve, reject) => {
             try {
                 // add asset structure validations

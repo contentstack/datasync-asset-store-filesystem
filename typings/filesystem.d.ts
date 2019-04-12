@@ -3,6 +3,18 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
+interface IAsset {
+    locale: string;
+    url: string;
+    uid: string;
+    _internal_url?: string;
+    apiVersion?: string;
+    apiKey?: string;
+    download_id?: string;
+    downloadId?: string;
+    filename?: string;
+    title?: string;
+}
 export declare class FsManager {
     private config;
     constructor(config: any);
@@ -19,10 +31,10 @@ export declare class FsManager {
      * @public
      * @method delete
      * @description Delete the asset from fs db
-     * @param  {object} asset Asset to be deleted
+     * @param  {Array} assets Assets to be deleted
      * @returns {Promise} returns the asset object, if successful.
      */
-    delete(asset: any): Promise<{}>;
+    delete(assets: IAsset[]): Promise<{}>;
     /**
      * @public
      * @method unpublish
@@ -30,5 +42,6 @@ export declare class FsManager {
      * @param  {object} asset Asset to be unpublished
      * @returns {Promise} returns the asset object, if successful.
      */
-    unpublish(asset: any): Promise<{}>;
+    unpublish(asset: IAsset): Promise<{}>;
 }
+export {};
