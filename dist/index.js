@@ -13,14 +13,23 @@ let connector;
 const debug = debug_1.debug('asset-store-filesystem');
 /**
  * @description to start the asset connector
- * @param  {Object} config: configs
- * @param  {Object} logger: logger instance
+ * @param {object} config Optional app config
+ * @example
+ * import { start } from '@contentstack/datasync-asset-store-filesystem'
+ * const assetStore = start(config)
+ *  .then()
+ *  .catch()
+ *
+ * return assetStore.download(asset)
+ * return assetStore.unpublish(asset)
+ *
+ * @return {FSAssetStore}
  */
 function start(config) {
     return new Promise((resolve, reject) => {
         try {
             config = (config) ? lodash_1.merge(config_1.defaultConfig, config) : config_1.defaultConfig;
-            connector = new filesystem_1.FsManager(config);
+            connector = new filesystem_1.FSAssetStore(config);
             return resolve(connector);
         }
         catch (error) {
@@ -30,10 +39,3 @@ function start(config) {
     });
 }
 exports.start = start;
-/**
- * @description to get connector instance
- */
-function getConnectorInstance() {
-    return connector;
-}
-exports.getConnectorInstance = getConnectorInstance;
