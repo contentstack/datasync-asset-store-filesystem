@@ -6,7 +6,7 @@
 
 import { debug as Debug } from 'debug';
 import { createWriteStream, existsSync } from 'fs';
-import { compact } from 'lodash';
+import { compact, cloneDeep } from 'lodash';
 import { join, resolve as resolvePath, sep } from 'path';
 import mkdirp from 'mkdirp';
 import request from 'request';
@@ -19,16 +19,30 @@ interface IAsset {
   locale: string,
   url: string,
   uid: string,
+  // created/calculated from the pattern keys provided
   _internal_url?: string,
+  // apiVersion, apiKey and download_id are calculated from asset's url
   apiVersion?: string,
   apiKey?: string,
   download_id?: string,
-  downloadId?: string,
+  // calculated from asset url when asset is of type RTE
   filename?: string,
+  // does not exist in RTE/Markdown assets
   title?: string,
 }
 
-export class FsManager {
+/**
+ * @class
+ * @private
+ * @summary Class that downloads and deletes assets from FS DB
+ * @example
+ * const assetStore = new FSAssetStore(config)
+ * return assetStore.download(asset)
+ *  .then()
+ *  .catch()
+ * @returns {FSAssetStore}
+ */
+export class FSAssetStore {
   private config: any;
 
   constructor(config) {
@@ -59,7 +73,7 @@ export class FsManager {
               const internalUrlKeys = extractDetails('internal', asset, this.config)
               asset._internal_url = join.apply(this, internalUrlKeys)
               const filePathArray = extractDetails('file', asset, this.config)
-              const folderPathArray = Object.assign([], filePathArray)
+              const folderPathArray = cloneDeep(filePathArray)
               folderPathArray.splice(folderPathArray.length - 1)
               const folderPath = resolvePath(join.apply(this, folderPathArray))
               const filePath = resolvePath(join.apply(this, filePathArray))
@@ -84,13 +98,11 @@ export class FsManager {
     });
   }
 
-
-
   /**
-   * @public
+   * @private
    * @method delete
    * @description Delete the asset from fs db
-   * @param  {Array} assets Assets to be deleted
+   * @param {array} assets Assets to be deleted
    * @returns {Promise} returns the asset object, if successful.
    */
   public delete(assets: IAsset[]) {
@@ -127,7 +139,7 @@ export class FsManager {
   }
 
   /**
-   * @public
+   * @private
    * @method unpublish
    * @description Unpublish the asset from filesystem
    * @param  {object} asset Asset to be unpublished
