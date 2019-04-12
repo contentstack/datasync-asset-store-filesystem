@@ -11,6 +11,7 @@ import { join, resolve as resolvePath, sep } from 'path';
 import mkdirp from 'mkdirp';
 import request from 'request';
 import rimraf from 'rimraf';
+import { extractDetails, validatePublishAsset, validateUnPublishAsset} from './utils'
 
 const debug = Debug('asset-store-filesystem');
 
@@ -40,16 +41,14 @@ export class FsManager {
    * @public
    * @method download
    * @description Downloads the asset object onto local fs
-   * @param  {object} input Asset object details
+   * @param  {object} asset Asset object details
    * @returns {Promise} returns the asset object, if successful.
    */
   public download(asset) {
     debug('Asset download invoked ' + JSON.stringify(asset));
     return new Promise((resolve, reject) => {
       try {
-        // Move utility calculations to a utility file
-        // Primaries in teh file: download, unpublish, delete
-        // add asset structure validations
+        validatePublishAsset(asset)
         return request.get({ url: encodeURI(asset.url) })
           .on('response', (resp) => {
             if (resp.statusCode === 200) {
@@ -57,22 +56,13 @@ export class FsManager {
                 const attachment = resp.headers['content-disposition'];
                 asset.filename = decodeURIComponent(attachment.split('=')[1]);
               }
-              
-              const internalUrlKeys = this.extractDetails('internal', asset)
-              // <prefix>/bltxyc123/abcd.jpg
+              const internalUrlKeys = extractDetails('internal', asset, this.config)
               asset._internal_url = join.apply(this, internalUrlKeys)
-
-              // [<prefix?>, 'uid', 'filename']
-              const filePathArray = this.extractDetails('file', asset)
-              // [<prefix?>, 'uid']
+              const filePathArray = extractDetails('file', asset, this.config)
               const folderPathArray = Object.assign([], filePathArray)
               folderPathArray.splice(folderPathArray.length - 1)
-
-              // <prefix>/bltxyc123
               const folderPath = resolvePath(join.apply(this, folderPathArray))
               const filePath = resolvePath(join.apply(this, filePathArray))
-
-              // blocking!
               if (!existsSync(folderPath)) {
                 mkdirp.sync(folderPath, '0755');
               }
@@ -94,53 +84,7 @@ export class FsManager {
     });
   }
 
-  private extractDetails(type, asset: IAsset) {
-    const values: any = []
-    let keys: string[]
 
-    if (type === 'internal') {
-      keys = this.config.internalUrlKeys
-    } else {
-      keys = this.config.folderPathKeys
-    }
-
-    if (this.config.assetFolderPrefixKey && typeof this.config.assetFolderPrefixKey === 'string') {
-      values.push(this.config.assetFolderPrefixKey)
-    }
-
-    const regexp = new RegExp('https://(assets|images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g')
-    let matches
-
-    while ((matches = regexp.exec(asset.url)) !== null) {
-      if (matches && matches.length) {
-        if (matches[2]) {
-          asset.apiVersion = matches[2]
-        }
-        if (matches[3]) {
-          asset.apiKey = matches[3]
-        }
-        if (matches[4]) {
-          asset.downloadId = matches[4]
-        }
-      }
-    }
-    debug(`extracting asset url from: ${JSON.stringify(asset)}.\nKeys expected from this asset are: ${JSON.stringify(keys)}`)
-
-    for (let i = 0, keyLength = keys.length; i < keyLength; i++) {
-      if (keys[i].charAt(0) === ':') {
-        const k = keys[i].substring(1)
-        if (asset[k]) {
-          values.push(asset[k])
-        } else {
-          throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
-        }
-      } else {
-        values.push(keys[i])
-      }
-    }
-
-    return values
-  }
 
   /**
    * @public
@@ -155,8 +99,8 @@ export class FsManager {
 
     return new Promise((resolve, reject) => {
       try {
-        // add asset structure validations
-        const folderPathArray = this.extractDetails('file', asset)
+        validateUnPublishAsset(asset)
+        const folderPathArray = extractDetails('file', asset, this.config)
         folderPathArray.splice(folderPathArray.length - 1, 1)
 
         const folderPath = resolvePath(join.apply(this, folderPathArray))
@@ -194,12 +138,10 @@ export class FsManager {
 
     return new Promise((resolve, reject) => {
       try {
-        // add asset structure validations
-        const filePathArray = this.extractDetails('file', asset)
+        validateUnPublishAsset(asset)
+        const filePathArray = extractDetails('file', asset, this.config)
         const filePath = resolvePath(join.apply(this, filePathArray))
-
         if (existsSync(filePath)) {
-          
           return rimraf(filePath, (error) => {
             if (error) {
               debug(`Error while removing ${filePath} asset file`);
