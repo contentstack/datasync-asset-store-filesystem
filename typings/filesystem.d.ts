@@ -11,11 +11,21 @@ interface IAsset {
     apiVersion?: string;
     apiKey?: string;
     download_id?: string;
-    downloadId?: string;
     filename?: string;
     title?: string;
 }
-export declare class FsManager {
+/**
+ * @class
+ * @private
+ * @summary Class that downloads and deletes assets from FS DB
+ * @example
+ * const assetStore = new FSAssetStore(config)
+ * return assetStore.download(asset)
+ *  .then()
+ *  .catch()
+ * @returns {FSAssetStore}
+ */
+export declare class FSAssetStore {
     private config;
     constructor(config: any);
     /**
@@ -27,15 +37,15 @@ export declare class FsManager {
      */
     download(asset: any): Promise<{}>;
     /**
-     * @public
+     * @private
      * @method delete
      * @description Delete the asset from fs db
-     * @param  {Array} assets Assets to be deleted
+     * @param {array} assets Assets to be deleted
      * @returns {Promise} returns the asset object, if successful.
      */
     delete(assets: IAsset[]): Promise<{}>;
     /**
-     * @public
+     * @private
      * @method unpublish
      * @description Unpublish the asset from filesystem
      * @param  {object} asset Asset to be unpublished
