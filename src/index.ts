@@ -7,21 +7,30 @@
 import { debug as Debug } from 'debug';
 import { merge } from 'lodash';
 import { defaultConfig } from './config';
-import { FsManager } from './filesystem';
+import { FSAssetStore } from './filesystem';
 
 let connector;
 const debug = Debug('asset-store-filesystem');
 /**
  * @description to start the asset connector
- * @param  {Object} config: configs
- * @param  {Object} logger: logger instance
+ * @param {object} config Optional app config
+ * @example
+ * import { start } from '@contentstack/datasync-asset-store-filesystem'
+ * const assetStore = start(config)
+ *  .then()
+ *  .catch()
+ * 
+ * return assetStore.download(asset)
+ * return assetStore.unpublish(asset)
+ * 
+ * @return {FSAssetStore}
  */
 export function start(config) {
 
   return new Promise((resolve, reject) => {
     try {
       config = (config) ? merge(defaultConfig, config) : defaultConfig;
-      connector = new FsManager(config);
+      connector = new FSAssetStore(config);
       return resolve(connector);
     } catch (error) {
       debug('Failed to load content-store due to', error);
@@ -29,10 +38,4 @@ export function start(config) {
     }
 
   });
-}
-/**
- * @description to get connector instance
- */
-export function getConnectorInstance() {
-  return connector;
 }

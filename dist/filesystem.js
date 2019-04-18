@@ -17,7 +17,18 @@ const request_1 = __importDefault(require("request"));
 const rimraf_1 = __importDefault(require("rimraf"));
 const utils_1 = require("./utils");
 const debug = debug_1.debug('asset-store-filesystem');
-class FsManager {
+/**
+ * @class
+ * @private
+ * @summary Class that downloads and deletes assets from FS DB
+ * @example
+ * const assetStore = new FSAssetStore(config)
+ * return assetStore.download(asset)
+ *  .then()
+ *  .catch()
+ * @returns {FSAssetStore}
+ */
+class FSAssetStore {
     constructor(config) {
         this.config = config.assetStore;
         this.config.folderPathKeys = lodash_1.compact(this.config.baseDir.split('/')).concat(lodash_1.compact(this.config.pattern.split('/')));
@@ -45,7 +56,7 @@ class FsManager {
                         const internalUrlKeys = utils_1.extractDetails('internal', asset, this.config);
                         asset._internal_url = path_1.join.apply(this, internalUrlKeys);
                         const filePathArray = utils_1.extractDetails('file', asset, this.config);
-                        const folderPathArray = Object.assign([], filePathArray);
+                        const folderPathArray = lodash_1.cloneDeep(filePathArray);
                         folderPathArray.splice(folderPathArray.length - 1);
                         const folderPath = path_1.resolve(path_1.join.apply(this, folderPathArray));
                         const filePath = path_1.resolve(path_1.join.apply(this, filePathArray));
@@ -72,10 +83,10 @@ class FsManager {
         });
     }
     /**
-     * @public
+     * @private
      * @method delete
      * @description Delete the asset from fs db
-     * @param  {Array} assets Assets to be deleted
+     * @param {array} assets Assets to be deleted
      * @returns {Promise} returns the asset object, if successful.
      */
     delete(assets) {
@@ -107,7 +118,7 @@ class FsManager {
         });
     }
     /**
-     * @public
+     * @private
      * @method unpublish
      * @description Unpublish the asset from filesystem
      * @param  {object} asset Asset to be unpublished
@@ -138,4 +149,4 @@ class FsManager {
         });
     }
 }
-exports.FsManager = FsManager;
+exports.FSAssetStore = FSAssetStore;

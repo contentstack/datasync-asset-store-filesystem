@@ -10,9 +10,6 @@ jest.config.js
 # Data
 _contents
 
-# Samples
-example
-
 # Node module dependencies
 node_modules
 
