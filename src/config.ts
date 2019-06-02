@@ -14,4 +14,4 @@ export const defaultConfig = {
     // optional seperator
     // seperator: '\/\/'
   },
-};
+}
