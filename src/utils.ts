@@ -4,7 +4,7 @@ const requiredKeysForUnpublish = ['url', 'locale', 'filename', 'uid', '_internal
 export const validatePublishAsset = (asset) => {
     requiredKeysForPublish.forEach((key) => {
       if (!(key in asset)) {
-        throw new Error(`${key} is missing in asset publish!`)
+        throw new Error(`${key} is missing in asset publish!\n${JSON.stringify(asset)}`)
       }
     })
 }
@@ -12,7 +12,7 @@ export const validatePublishAsset = (asset) => {
 export const validateUnPublishAsset = (asset) => {
     requiredKeysForUnpublish.forEach((key) => {
       if (!(key in asset)) {
-        throw new Error(`${key} is missing in asset publish!`)
+        throw new Error(`${key} is missing in asset unpublish!\n${JSON.stringify(asset)}`)
       }
     })
 }
