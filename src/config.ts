@@ -9,9 +9,9 @@ export const defaultConfig = {
   assetStore: {
     // optional prefixing of asset in internal urls
     // assetFolderPrefixKey: 'dev-assets',
-    baseDir: '_contents/:locale',
-    pattern:  '/assets/:uid/:filename',
+    baseDir: '_contents',
+    pattern:  '/:locale/assets/:uid/:filename',
     // optional seperator
     // seperator: '\/\/'
   },
-};
+}
