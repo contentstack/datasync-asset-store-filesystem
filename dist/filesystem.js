@@ -15,6 +15,7 @@ const path_1 = require("path");
 const mkdirp_1 = __importDefault(require("mkdirp"));
 const request_1 = __importDefault(require("request"));
 const rimraf_1 = __importDefault(require("rimraf"));
+const index_1 = require("./index");
 const utils_1 = require("./utils");
 const debug = debug_1.debug('asset-store-filesystem');
 /**
@@ -31,8 +32,6 @@ const debug = debug_1.debug('asset-store-filesystem');
 class FSAssetStore {
     constructor(config) {
         this.config = config.assetStore;
-        this.config.folderPathKeys = lodash_1.compact(this.config.baseDir.split('/')).concat(lodash_1.compact(this.config.pattern.split('/')));
-        this.config.internalUrlKeys = lodash_1.compact(this.config.pattern.split('/'));
     }
     /**
      * @public
@@ -53,9 +52,8 @@ class FSAssetStore {
                             const attachment = resp.headers['content-disposition'];
                             asset.filename = decodeURIComponent(attachment.split('=')[1]);
                         }
-                        const internalUrlKeys = utils_1.extractDetails('internal', asset, this.config);
-                        asset._internal_url = path_1.join.apply(this, internalUrlKeys);
-                        const filePathArray = utils_1.extractDetails('file', asset, this.config);
+                        asset._internal_url = index_1.getAssetLocation(asset, this.config);
+                        const filePathArray = index_1.getFileLocation(asset, this.config);
                         const folderPathArray = lodash_1.cloneDeep(filePathArray);
                         folderPathArray.splice(folderPathArray.length - 1);
                         const folderPath = path_1.resolve(path_1.join.apply(this, folderPathArray));
@@ -95,7 +93,7 @@ class FSAssetStore {
         return new Promise((resolve, reject) => {
             try {
                 utils_1.validateUnPublishAsset(asset);
-                const folderPathArray = utils_1.extractDetails('file', asset, this.config);
+                const folderPathArray = index_1.getFileLocation(asset, this.config);
                 folderPathArray.splice(folderPathArray.length - 1, 1);
                 const folderPath = path_1.resolve(path_1.join.apply(this, folderPathArray));
                 if (fs_1.existsSync(folderPath)) {
@@ -129,7 +127,7 @@ class FSAssetStore {
         return new Promise((resolve, reject) => {
             try {
                 utils_1.validateUnPublishAsset(asset);
-                const filePathArray = utils_1.extractDetails('file', asset, this.config);
+                const filePathArray = index_1.getFileLocation(asset, this.config);
                 const filePath = path_1.resolve(path_1.join.apply(this, filePathArray));
                 if (fs_1.existsSync(filePath)) {
                     return rimraf_1.default(filePath, (error) => {

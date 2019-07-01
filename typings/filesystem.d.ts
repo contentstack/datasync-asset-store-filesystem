@@ -35,7 +35,7 @@ export declare class FSAssetStore {
      * @param  {object} asset Asset object details
      * @returns {Promise} returns the asset object, if successful.
      */
-    download(asset: any): Promise<{}>;
+    download(asset: any): Promise<unknown>;
     /**
      * @private
      * @method delete
@@ -43,7 +43,7 @@ export declare class FSAssetStore {
      * @param {array} assets Assets to be deleted
      * @returns {Promise} returns the asset object, if successful.
      */
-    delete(assets: IAsset[]): Promise<{}>;
+    delete(assets: IAsset[]): Promise<unknown>;
     /**
      * @private
      * @method unpublish
@@ -51,6 +51,6 @@ export declare class FSAssetStore {
      * @param  {object} asset Asset to be unpublished
      * @returns {Promise} returns the asset object, if successful.
      */
-    unpublish(asset: IAsset): Promise<{}>;
+    unpublish(asset: IAsset): Promise<unknown>;
 }
 export {};
