@@ -1,5 +1,5 @@
 const requiredKeysForPublish = ['url', 'locale', 'uid']
-const requiredKeysForUnpublish = ['url', 'locale', 'filename', 'uid', '_internal_url']
+const requiredKeysForUnpublish = ['url', 'locale', 'filename', 'uid']
 
 export const validatePublishAsset = (asset) => {
     requiredKeysForPublish.forEach((key) => {

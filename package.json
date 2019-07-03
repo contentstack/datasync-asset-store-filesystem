@@ -1,7 +1,7 @@
 {
   "name": "@contentstack/datasync-asset-store-filesystem",
   "version": "1.0.0",
-  "description": "Part of Contentstack DataSync libraries. Stores Contentstack asset-files in filesystem",
+  "description": "Fillesystem asset store for DataSync libraries. Stores Contentstack asset-files in filesystem",
   "main": "./dist",
   "types": "./typings",
   "homepage": "https://www.contentstack.com/docs/guide/synchronization/contentstack-datasync",
@@ -37,19 +37,18 @@
   "author": "Contentstack LLC <support@contentstack.com>",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.11",
-    "mkdirp": "^0.5.1",
-    "request": "^2.83.0",
-    "rimraf": "2.6.2",
-    "debug": "^4.1.0"
+    "lodash": "4.17.11",
+    "mkdirp": "0.5.1",
+    "request": "2.88.0",
+    "rimraf": "2.6.3",
+    "debug": "4.1.1"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.10",
-    "@types/node": "^10.12.2",
+    "@types/jest": "23.3.10",
+    "@types/node": "10.12.2",
     "jest": "24.8.0",
-    "rimraf": "^2.6.2",
-    "supertest": "^3.3.0",
-    "tslint": "^5.18.0",
-    "typescript": "^3.2.2"
+    "supertest": "3.3.0",
+    "tslint": "5.18.0",
+    "typescript": "3.2.2"
   }
 }

@@ -1,43 +1,53 @@
 {
-  "extends": "tslint:latest",
+  "extends": "tslint:recommended",
   "rules": {
-    "class-name": true,
-    "comment-format": [true, "check-space"],
+    "max-line-length": {
+      "options": [120]
+    },
+    "new-parens": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "no-console": {
+      "severity": "warning",
+      "options": [
+        "debug",
+        "info",
+        "log",
+        "time",
+        "timeEnd",
+        "trace"
+      ]
+    },
+    "no-empty-interface": true,
+    "only-arrow-functions": true,
+    "no-string-throw": true,
+    "no-unsafe-any": false,
+    "triple-equals": true,
+    "eofline": true,
     "indent": [true, "spaces", 2],
-    "one-line": [true, "check-open-brace", "check-whitespace"],
-    "no-var-keyword": true,
-    "quotemark": [true, "single", "avoid-escape"],
-    "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "whitespace": [
-      true,
-      "check-branch",
-      "check-decl",
-      "check-operator",
-      "check-module",
-      "check-separator",
-      "check-type"
-    ],
-    "typedef-whitespace": [
-      true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      },
-      {
-        "call-signature": "onespace",
-        "index-signature": "onespace",
-        "parameter": "onespace",
-        "property-declaration": "onespace",
-        "variable-declaration": "onespace"
-      }
-    ],
-    "no-internal-module": true,
+    "max-file-line-count": [true, 350],
+    "no-default-export": true,
+    "no-duplicate-imports": true,
+    "prefer-readonly": true,
+    "align": [true, "parameters", "statements"],
+    "class-name": true,
+    "file-name-casing": true,
+    "import-spacing": true,
+    "interface-name": [true, "always-prefix"],
+    "newline-before-return": true,
+    "no-irregular-whitespace": true,
     "no-trailing-whitespace": true,
-    "no-null-keyword": true,
-    "prefer-const": true,
-    "jsdoc-format": true
+    "one-line": [true, "check-catch", "check-finally", "check-else"],
+    "one-variable-per-declaration": [true, "ignore-for-loop"],
+    "ordered-imports": true,
+    "semicolon": [true, "never"],
+    "quotemark": [true, "single", "avoid-escape", "avoid-template"]
+  },
+  "jsRules": {
+    "max-line-length": {
+      "options": [150]
+    }
   }
 }
