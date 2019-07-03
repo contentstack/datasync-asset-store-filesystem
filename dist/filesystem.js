@@ -1,9 +1,9 @@
 "use strict";
 /*!
-* contentstack-sync-asset-store-filesystem
-* copyright (c) Contentstack LLC
-* MIT Licensed
-*/
+ * contentstack-sync-asset-store-filesystem
+ * copyright (c) Contentstack LLC
+ * MIT Licensed
+ */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -11,8 +11,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const debug_1 = require("debug");
 const fs_1 = require("fs");
 const lodash_1 = require("lodash");
-const path_1 = require("path");
 const mkdirp_1 = __importDefault(require("mkdirp"));
+const path_1 = require("path");
 const request_1 = __importDefault(require("request"));
 const rimraf_1 = __importDefault(require("rimraf"));
 const index_1 = require("./index");
@@ -45,7 +45,9 @@ class FSAssetStore {
         return new Promise((resolve, reject) => {
             try {
                 utils_1.validatePublishAsset(asset);
-                return request_1.default.get({ url: encodeURI(asset.url) })
+                return request_1.default.get({
+                    url: encodeURI(asset.url),
+                })
                     .on('response', (resp) => {
                     if (resp.statusCode === 200) {
                         if (asset.hasOwnProperty('download_id')) {

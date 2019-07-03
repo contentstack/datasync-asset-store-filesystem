@@ -1,35 +1,52 @@
 /*!
-* contentstack-sync-asset-store-filesystem
-* copyright (c) Contentstack LLC
-* MIT Licensed
-*/
+ * contentstack-sync-asset-store-filesystem
+ * copyright (c) Contentstack LLC
+ * MIT Licensed
+ */
 
-import { debug as Debug } from 'debug'
-import { createWriteStream, existsSync } from 'fs'
-import { cloneDeep } from 'lodash'
-import { join, resolve as resolvePath, sep } from 'path'
+import {
+  debug as Debug,
+} from 'debug'
+import {
+  createWriteStream,
+  existsSync,
+} from 'fs'
+import {
+  cloneDeep,
+} from 'lodash'
 import mkdirp from 'mkdirp'
+import {
+  join,
+  resolve as resolvePath,
+} from 'path'
 import request from 'request'
 import rimraf from 'rimraf'
-import { getAssetLocation, getFileLocation } from './index'
-import { validatePublishAsset, validateUnPublishAsset} from './utils'
+import {
+  getAssetLocation,
+  getFileLocation,
+} from './index'
+import {
+  validatePublishAsset,
+  validateUnPublishAsset,
+} from './utils'
 
 const debug = Debug('asset-store-filesystem')
 
 interface IAsset {
   locale: string,
-  url: string,
-  uid: string,
-  // created/calculated from the pattern keys provided
-  _internal_url?: string,
-  // apiVersion, apiKey and download_id are calculated from asset's url
-  apiVersion?: string,
-  apiKey?: string,
-  download_id?: string,
-  // calculated from asset url when asset is of type RTE
-  filename?: string,
-  // does not exist in RTE/Markdown assets
-  title?: string,
+    url: string,
+    uid: string,
+    // created/calculated from the pattern keys provided
+    _internal_url ?: string,
+    // apiVersion, apiKey and download_id are calculated from asset's url
+    apiVersion ?: string,
+    apiKey ?: string,
+    download_id ?: string,
+    // calculated from asset url when asset is of type RTE
+    filename ?: string,
+    // does not exist in RTE/Markdown assets
+    title ?: string,
+    [propName: string]: any,
 }
 
 /**
@@ -44,7 +61,7 @@ interface IAsset {
  * @returns {FSAssetStore}
  */
 export class FSAssetStore {
-  private config: any
+  private readonly config: any
 
   constructor(config) {
     this.config = config.assetStore
@@ -59,10 +76,14 @@ export class FSAssetStore {
    */
   public download(asset) {
     debug('Asset download invoked ' + JSON.stringify(asset))
+
     return new Promise((resolve, reject) => {
       try {
         validatePublishAsset(asset)
-        return request.get({ url: encodeURI(asset.url) })
+
+        return request.get({
+            url: encodeURI(asset.url),
+          })
           .on('response', (resp) => {
             if (resp.statusCode === 200) {
               if (asset.hasOwnProperty('download_id')) {
@@ -75,6 +96,7 @@ export class FSAssetStore {
               folderPathArray.splice(folderPathArray.length - 1)
               const folderPath = resolvePath(join.apply(this, folderPathArray))
               const filePath = resolvePath(join.apply(this, filePathArray))
+
               if (!existsSync(folderPath)) {
                 mkdirp.sync(folderPath, '0755')
               }
@@ -91,6 +113,7 @@ export class FSAssetStore {
           .end()
       } catch (error) {
         debug(`${asset.uid} asset download failed`)
+
         return reject(error)
       }
     })

@@ -15,12 +15,13 @@ let assetStoreInstance;
 exports.assetStoreInstance = assetStoreInstance;
 exports.getAssetLocation = (asset, config) => {
     const values = [];
-    let keys = lodash_1.compact(config.pattern.split('/'));
+    const keys = lodash_1.compact(config.pattern.split('/'));
     if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
         values.push(config.assetFolderPrefixKey);
     }
-    const regexp = new RegExp('https://(assets|images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g');
+    const regexp = new RegExp('https://(assets|images).contentstack.io/v3/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g');
     let matches;
+    // tslint:disable-next-line: no-conditional-assignment
     while ((matches = regexp.exec(asset.url)) !== null) {
         if (matches && matches.length) {
             if (matches[2]) {
@@ -52,12 +53,13 @@ exports.getAssetLocation = (asset, config) => {
 };
 exports.getFileLocation = (asset, config) => {
     const values = [];
-    let keys = lodash_1.compact(config.baseDir.split('/')).concat(lodash_1.compact(config.pattern.split('/')));
+    const keys = lodash_1.compact(config.baseDir.split('/')).concat(lodash_1.compact(config.pattern.split('/')));
     if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
         values.push(config.assetFolderPrefixKey);
     }
     const regexp = new RegExp('https://(assets|images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g');
     let matches;
+    // tslint:disable-next-line: no-conditional-assignment
     while ((matches = regexp.exec(asset.url)) !== null) {
         if (matches && matches.length) {
             if (matches[2]) {
