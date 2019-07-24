@@ -19,7 +19,7 @@ exports.getAssetLocation = (asset, config) => {
     if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
         values.push(config.assetFolderPrefixKey);
     }
-    const regexp = new RegExp('https://(assets|images).contentstack.io/v3/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g');
+    const regexp = new RegExp('https://(assets|images|dev-assets|dev-images|stag-assets|stag-images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g');
     let matches;
     // tslint:disable-next-line: no-conditional-assignment
     while ((matches = regexp.exec(asset.url)) !== null) {
@@ -57,7 +57,7 @@ exports.getFileLocation = (asset, config) => {
     if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
         values.push(config.assetFolderPrefixKey);
     }
-    const regexp = new RegExp('https://(assets|images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g');
+    const regexp = new RegExp('https://(assets|images|dev-assets|dev-images|stag-assets|stag-images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g');
     let matches;
     // tslint:disable-next-line: no-conditional-assignment
     while ((matches = regexp.exec(asset.url)) !== null) {

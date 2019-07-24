@@ -21,7 +21,7 @@ export const getAssetLocation = (asset, config) => {
     values.push(config.assetFolderPrefixKey)
   }
 
-  const regexp = new RegExp('https://(assets|images).contentstack.io/v3/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g')
+  const regexp = new RegExp('https://(assets|images|dev-assets|dev-images|stag-assets|stag-images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g')
   let matches
 
   // tslint:disable-next-line: no-conditional-assignment
@@ -63,7 +63,7 @@ export const getFileLocation = (asset, config) => {
     values.push(config.assetFolderPrefixKey)
   }
 
-  const regexp = new RegExp('https://(assets|images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g')
+  const regexp = new RegExp('https://(assets|images|dev-assets|dev-images|stag-assets|stag-images).contentstack.io/(v[\\d])/assets/(.*?)/(.*?)/(.*?)/(.*)', 'g')
   let matches
 
   // tslint:disable-next-line: no-conditional-assignment
