@@ -37,11 +37,11 @@
   "author": "Contentstack LLC <support@contentstack.com>",
   "license": "MIT",
   "dependencies": {
-    "lodash": "4.17.11",
+    "debug": "4.1.1",
+    "lodash": "^4.17.15",
     "mkdirp": "0.5.1",
     "request": "2.88.0",
-    "rimraf": "2.6.3",
-    "debug": "4.1.1"
+    "rimraf": "2.6.3"
   },
   "devDependencies": {
     "@types/jest": "23.3.10",
