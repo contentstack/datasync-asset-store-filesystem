@@ -1,8 +1,8 @@
 /*!
-* contentstack-sync-asset-store-filesystem
-* copyright (c) Contentstack LLC
-* MIT Licensed
-*/
+ * contentstack-sync-asset-store-filesystem
+ * copyright (c) Contentstack LLC
+ * MIT Licensed
+ */
 interface IAsset {
     locale: string;
     url: string;
@@ -13,6 +13,7 @@ interface IAsset {
     download_id?: string;
     filename?: string;
     title?: string;
+    [propName: string]: any;
 }
 /**
  * @class
@@ -26,7 +27,7 @@ interface IAsset {
  * @returns {FSAssetStore}
  */
 export declare class FSAssetStore {
-    private config;
+    private readonly config;
     constructor(config: any);
     /**
      * @public
@@ -35,7 +36,7 @@ export declare class FSAssetStore {
      * @param  {object} asset Asset object details
      * @returns {Promise} returns the asset object, if successful.
      */
-    download(asset: any): Promise<unknown>;
+    download(asset: any): Promise<{}>;
     /**
      * @private
      * @method delete
@@ -43,7 +44,7 @@ export declare class FSAssetStore {
      * @param {array} assets Assets to be deleted
      * @returns {Promise} returns the asset object, if successful.
      */
-    delete(assets: IAsset[]): Promise<unknown>;
+    delete(assets: IAsset[]): Promise<{}>;
     /**
      * @private
      * @method unpublish
@@ -51,6 +52,6 @@ export declare class FSAssetStore {
      * @param  {object} asset Asset to be unpublished
      * @returns {Promise} returns the asset object, if successful.
      */
-    unpublish(asset: IAsset): Promise<unknown>;
+    unpublish(asset: IAsset): Promise<{}>;
 }
 export {};

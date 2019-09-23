@@ -23,4 +23,4 @@ export { assetStoreInstance };
  *
  * @return {FSAssetStore}
  */
-export declare function start(config: any): Promise<unknown>;
+export declare function start(config: any): Promise<{}>;
