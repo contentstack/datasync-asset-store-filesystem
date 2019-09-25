@@ -3,13 +3,13 @@
 * copyright (c) Contentstack LLC
 * MIT Licensed
 */
-declare module "assetStore"{
-	
-	declare let assetStoreInstance: any;
-	export declare const getAssetLocation: (asset: any, config: any) => any;
-	export declare const getFileLocation: (asset: any, config: any) => any;
-	export declare const setConfig: (config: any) => void;
-	export declare const getConfig: () => any;
+declare module 'assetstore-filesystem' {
+
+	 let assetStoreInstance: any;
+	export  const getAssetLocation: (asset: any, config: any) => any;
+	export  const getFileLocation: (asset: any, config: any) => any;
+	export  const setConfig: (config: any) => void;
+	export  const getConfig: () => any;
 	export { assetStoreInstance };
 	/**
 	 	* @description to start the asset connector
@@ -25,7 +25,7 @@ declare module "assetStore"{
 	 *
 	 * @return {FSAssetStore}
 	 */
-	export declare function start(config: any): Promise<unknown>;
+	export  function start(config: any): Promise<unknown>;
 
 	interface IAsset {
 	    locale: string;
@@ -50,7 +50,7 @@ declare module "assetStore"{
 	 *  .catch()
 	 * @returns {FSAssetStore}
 	 */
-	export declare class FSAssetStore {
+	export class FSAssetStore {
 	    private config;
 	    constructor(config: any);
 	    /**
