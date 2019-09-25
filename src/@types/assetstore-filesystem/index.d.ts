@@ -5,14 +5,14 @@
 */
 declare module 'assetstore-filesystem' {
 
-	 let assetStoreInstance: any;
+	let assetStoreInstance: any;
 	export  const getAssetLocation: (asset: any, config: any) => any;
 	export  const getFileLocation: (asset: any, config: any) => any;
 	export  const setConfig: (config: any) => void;
 	export  const getConfig: () => any;
 	export { assetStoreInstance };
 	/**
-	 	* @description to start the asset connector
+	 * @description to start the asset connector
 	 * @param {object} config Optional app config
 	 * @example
 	 * import { start } from '@contentstack/datasync-asset-store-filesystem'
