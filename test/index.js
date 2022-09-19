@@ -97,9 +97,7 @@ describe('# asset test', function () {
 		const asset = require('../dist')
 		
 		asset.start(conf)
-			.then(_connector => {
-				let store = _connector
-			})
+			.then(_connector => {})
 		let instance= asset.getConnectorInstance()
 		return instance.download(asset_data).then(function (result) {
 			expect(result).toHaveProperty("uid");
@@ -111,9 +109,7 @@ describe('# asset test', function () {
 		const asset = require('../dist')
 		
 		asset.start()
-			.then(_connector => {
-				let store = _connector
-			}).catch((error)=>{
+			.then(_connector => {}).catch((error)=>{
 				expect(error).toBe(error)
 			})
 		
