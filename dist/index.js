@@ -5,6 +5,7 @@
 * MIT Licensed
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.start = exports.assetStoreInstance = exports.getConfig = exports.setConfig = exports.getFileLocation = exports.getAssetLocation = void 0;
 const debug_1 = require("debug");
 const lodash_1 = require("lodash");
 const path_1 = require("path");

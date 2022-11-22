@@ -8,6 +8,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FSAssetStore = void 0;
 const debug_1 = require("debug");
 const fs_1 = require("fs");
 const lodash_1 = require("lodash");
