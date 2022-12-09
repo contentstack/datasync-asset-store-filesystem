@@ -11,6 +11,6 @@ exports.defaultConfig = {
         // optional prefixing of asset in internal urls
         // assetFolderPrefixKey: 'dev-assets',
         baseDir: './_contents',
-        pattern: '/:locale/assets/:uid/:filename',
+        pattern: ':branch/:locale/assets/:uid/:filename',
     },
 };
