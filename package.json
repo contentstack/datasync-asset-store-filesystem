@@ -1,6 +1,6 @@
 {
   "name": "@contentstack/datasync-asset-store-filesystem",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fillesystem asset store for DataSync libraries. Stores Contentstack asset-files in filesystem",
   "main": "./dist",
   "types": "./typings",
@@ -49,6 +49,6 @@
     "jest": "^29.0.3",
     "supertest": "3.3.0",
     "tslint": "5.18.0",
-    "typescript": "3.2.2"
+    "typescript": "^3.4.2"
   }
 }
