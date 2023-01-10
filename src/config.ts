@@ -11,6 +11,7 @@ export const defaultConfig = {
     // assetFolderPrefixKey: 'dev-assets',
     baseDir: './_contents',
     pattern:  '/:locale/assets/:uid/:filename',
+    patternWithBranch:  ':branch/:locale/assets/:uid/:filename',
     // optional seperator
     // seperator: '\/\/'
   },
