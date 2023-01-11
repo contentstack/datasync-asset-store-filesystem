@@ -16,7 +16,7 @@ let assetStoreInstance;
 exports.assetStoreInstance = assetStoreInstance;
 exports.getAssetLocation = (asset, config) => {
     const values = [];
-    const keys = config.contentstack.branch ? lodash_1.compact(config.patternWithBranch.split('/')) : lodash_1.compact(config.pattern.split('/'));
+    const keys = assetStoreConfig.contentstack.branch ? lodash_1.compact(config.patternWithBranch.split('/')) : lodash_1.compact(config.pattern.split('/'));
     if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
         values.push(config.assetFolderPrefixKey);
     }
@@ -55,7 +55,7 @@ exports.getAssetLocation = (asset, config) => {
 exports.getFileLocation = (asset, config) => {
     const values = [];
     const keys = lodash_1.compact(config.baseDir.split('/'));
-    const dir = config.contentstack.branch ? lodash_1.compact(config.patternsWithBranch.split('/')) : lodash_1.compact(config.pattern.split('/'));
+    const dir = assetStoreConfig.contentstack.branch ? lodash_1.compact(config.patternsWithBranch.split('/')) : lodash_1.compact(config.pattern.split('/'));
     keys.concat(dir);
     if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
         values.push(config.assetFolderPrefixKey);

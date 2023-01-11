@@ -23,7 +23,7 @@
     "test": "jest --coverage",
     "tslint": "npx tslint -c tslint.json 'src/**/*.ts' --fix",
     "compile": "tsc",
-    "prepare": "npm run compile",
+    "prepare-disabled": "npm run compile",
     "pretest": "npm run build-ts && rimraf _contents coverage"
   },
   "repository": {
