@@ -57,9 +57,9 @@ export const getAssetLocation = (asset, config) => {
 
 export const getFileLocation = (asset, config) => {
   const values: any = []
-  const keys: string[] = compact(config.baseDir.split('/'))
+  let keys: string[] = compact(config.baseDir.split('/'))
   const dir: string[] = assetStoreConfig.contentstack.branch ? compact(config.patternsWithBranch.split('/')) : compact(config.pattern.split('/'));
-  keys.concat(dir);
+  keys = keys.concat(dir);
    
   if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
     values.push(config.assetFolderPrefixKey)

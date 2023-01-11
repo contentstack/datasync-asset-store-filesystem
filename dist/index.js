@@ -54,9 +54,9 @@ exports.getAssetLocation = (asset, config) => {
 };
 exports.getFileLocation = (asset, config) => {
     const values = [];
-    const keys = lodash_1.compact(config.baseDir.split('/'));
+    let keys = lodash_1.compact(config.baseDir.split('/'));
     const dir = assetStoreConfig.contentstack.branch ? lodash_1.compact(config.patternsWithBranch.split('/')) : lodash_1.compact(config.pattern.split('/'));
-    keys.concat(dir);
+    keys = keys.concat(dir);
     if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
         values.push(config.assetFolderPrefixKey);
     }
