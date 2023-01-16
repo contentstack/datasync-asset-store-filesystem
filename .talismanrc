@@ -1,8 +1,4 @@
 fileignoreconfig:
 - filename: package-lock.json
-  checksum: 762ee020d95deb8ed0e62acc2ebdd0a492a253c1ef4458dd87fa201190ca9703
-- filename: dist/index.js
-  checksum: 95de4ab21684814245fd1610f3a4ef7d2150557e446c16d23178404f35fddc39
-- filename: src/index.ts
-  checksum: e88791e0cbd3a29fd77a74efe935a46916d579e493b00e8e14d011d440483d80
+  checksum: 77733a6efb1b3dbde855e4bb2794b8207e058f4bfa3792356fc0eaf1650a662c
 version: ""
