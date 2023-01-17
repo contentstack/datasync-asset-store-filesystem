@@ -16,6 +16,11 @@
     "utility",
     "datasync"
   ],
+  "files": [
+    "/dist",
+    "/typings",
+    "/npm-shrinkwrap.json"
+  ],
   "scripts": {
     "clean": "rimraf dist coverage",
     "build-ts": "npm run clean && tsc",
