@@ -10,7 +10,8 @@ export const defaultConfig = {
     // optional prefixing of asset in internal urls
     // assetFolderPrefixKey: 'dev-assets',
     baseDir: './_contents',
-    pattern:  ':branch/:locale/assets/:uid/:filename',
+    pattern:  '/:locale/assets/:uid/:filename',
+    patternWithBranch:  ':branch/:locale/assets/:uid/:filename',
     // optional seperator
     // seperator: '\/\/'
   },
