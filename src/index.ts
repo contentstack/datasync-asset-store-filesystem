@@ -15,7 +15,7 @@ let assetStoreInstance
 
 export const getAssetLocation = (asset, config) => {
   const values: any = []
-  const keys: string[] = compact(config.pattern.split('/'))
+  const keys: string[] = assetStoreConfig.contentstack.branch ? compact(config.patternWithBranch.split('/')) : compact(config.pattern.split('/'));
 
   if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
     values.push(config.assetFolderPrefixKey)
@@ -57,8 +57,10 @@ export const getAssetLocation = (asset, config) => {
 
 export const getFileLocation = (asset, config) => {
   const values: any = []
-  const keys: string[] = compact(config.baseDir.split('/')).concat(compact(config.pattern.split('/')))
-
+  let keys: string[] = compact(config.baseDir.split('/'))
+  const dir: string[] = assetStoreConfig.contentstack.branch ? compact(config.patternWithBranch.split('/')) : compact(config.pattern.split('/'));
+  keys = keys.concat(dir);
+   
   if (config.assetFolderPrefixKey && typeof config.assetFolderPrefixKey === 'string') {
     values.push(config.assetFolderPrefixKey)
   }
