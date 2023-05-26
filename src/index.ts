@@ -110,7 +110,12 @@ export const getConfig = () => {
 export { assetStoreInstance }
 
 const debug = Debug('asset-store-filesystem')
-if (process.env.DEBUG === '*') debug.enabled = true;
+if (
+  process.env.DEBUG === "*" ||
+  (process.env.DEBUG || "").includes("asset-store-filesystem")
+) {
+  debug.enabled = true;
+}
 
 /**
  * @description to start the asset connector

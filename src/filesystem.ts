@@ -31,7 +31,12 @@ import {
 } from './utils'
 
 const debug = Debug('asset-store-filesystem')
-if (process.env.DEBUG === "*") debug.enabled = true;
+if (
+  process.env.DEBUG === "*" ||
+  (process.env.DEBUG || "").includes("asset-store-filesystem")
+) {
+  debug.enabled = true;
+}
 
 interface IAsset {
   locale: string,
