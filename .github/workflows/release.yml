@@ -6,15 +6,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3.5.3
+      - uses: actions/setup-node@v3.7.0
         with:
-          node-version: "16.x"
+          node-version: "18.x"
       - name: Installing dependencies
         run: npm install
       - name: Build
         run: npm run build-ts
       - name: Publishing datasync asset store filesystem
-        uses: JS-DevTools/npm-publish@v1
+        id: publish-to-npm
+        uses: JS-DevTools/npm-publish@v2.2.1
         with:
           token: ${{ secrets.NPM_TOKEN }}
+      - name: github-release
+        id: github-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:  gh release create v${{ steps.publish-to-npm.outputs.version }} --title "Release ${{ steps.publish-to-npm.outputs.version }}" --generate-notes
+
