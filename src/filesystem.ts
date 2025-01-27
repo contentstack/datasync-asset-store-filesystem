@@ -130,7 +130,7 @@ export class FSAssetStore {
     debug('Asset deletion called for', JSON.stringify(assets))
     const asset = assets[0]
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         validateUnPublishAsset(asset)
         const folderPathArray = getFileLocation(asset, this.config)
@@ -138,16 +138,13 @@ export class FSAssetStore {
 
         const folderPath = resolvePath(join.apply(this, folderPathArray))
         if (existsSync(folderPath)) {
-
-          return rimraf(folderPath, (error) => {
-            if (error) {
-              debug(`Error while removing ${folderPath} asset file`)
-
-              return reject(error)
-            }
-
-            return resolve(asset)
-          })
+          try {
+            await rimraf(folderPath);
+            return resolve(asset);
+          } catch (error) {
+            debug(`Error while removing ${folderPath} asset file`);
+            return reject(error);
+          }
         } else {
           debug(`${folderPath} did not exist!`)
 
@@ -169,21 +166,19 @@ export class FSAssetStore {
   public unpublish(asset: IAsset) {
     debug(`Asset unpublish called ${JSON.stringify(asset)}`)
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         validateUnPublishAsset(asset)
         const filePathArray = getFileLocation(asset, this.config)
         const filePath = resolvePath(join.apply(this, filePathArray))
         if (existsSync(filePath)) {
-          return rimraf(filePath, (error) => {
-            if (error) {
-              debug(`Error while removing ${filePath} asset file`)
-
-              return reject(error)
-            }
-
+          try {
+            await rimraf(filePath);
             return resolve(asset)
-          })
+          } catch (error) {
+            debug(`Error while removing ${filePath} asset file`)
+            return reject(error)
+          }
         }
         debug(`${filePath} did not exist!`)
 
