@@ -138,16 +138,12 @@ export class FSAssetStore {
 
         const folderPath = resolvePath(join.apply(this, folderPathArray))
         if (existsSync(folderPath)) {
-
-          return rimraf(folderPath, (error) => {
-            if (error) {
-              debug(`Error while removing ${folderPath} asset file`)
-
-              return reject(error)
-            }
-
-            return resolve(asset)
-          })
+          return rimraf(folderPath)
+            .then(() => resolve(asset))
+            .catch((error) => {
+              debug(`Error while removing ${folderPath} asset file`);
+              return reject(error);
+            });
         } else {
           debug(`${folderPath} did not exist!`)
 
@@ -175,15 +171,12 @@ export class FSAssetStore {
         const filePathArray = getFileLocation(asset, this.config)
         const filePath = resolvePath(join.apply(this, filePathArray))
         if (existsSync(filePath)) {
-          return rimraf(filePath, (error) => {
-            if (error) {
-              debug(`Error while removing ${filePath} asset file`)
-
-              return reject(error)
-            }
-
-            return resolve(asset)
-          })
+          return rimraf(filePath)
+            .then(() => resolve(asset))
+            .catch((error) => {
+              debug(`Error while removing ${filePath} asset file`);
+              return reject(error);
+            });
         }
         debug(`${filePath} did not exist!`)
 
