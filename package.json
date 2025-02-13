@@ -45,7 +45,7 @@
     "debug": "^4.3.4",
     "lodash": "^4.17.15",
     "mkdirp": "^1.0.4",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
