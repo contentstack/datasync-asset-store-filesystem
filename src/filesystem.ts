@@ -28,6 +28,7 @@ import {
 import {
   validatePublishAsset,
   validateUnPublishAsset,
+  sanitizePath
 } from './utils'
 
 const debug = Debug('asset-store-filesystem')
@@ -94,8 +95,8 @@ export class FSAssetStore {
               const filePathArray = getFileLocation(asset, this.config)
               const folderPathArray = cloneDeep(filePathArray)
               folderPathArray.splice(folderPathArray.length - 1)
-              const folderPath = resolvePath(join.apply(this, folderPathArray))
-              const filePath = resolvePath(join.apply(this, filePathArray))
+              const folderPath = sanitizePath(resolvePath(join.apply(this, folderPathArray)))
+              const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
 
               if (!existsSync(folderPath)) {
                 mkdirp.sync(folderPath, '0755')
@@ -136,7 +137,7 @@ export class FSAssetStore {
         const folderPathArray = getFileLocation(asset, this.config)
         folderPathArray.splice(folderPathArray.length - 1, 1)
 
-        const folderPath = resolvePath(join.apply(this, folderPathArray))
+        const folderPath = sanitizePath(resolvePath(join.apply(this, folderPathArray)))
         if (existsSync(folderPath)) {
           return rimraf(folderPath)
             .then(() => resolve(asset))
@@ -169,7 +170,7 @@ export class FSAssetStore {
       try {
         validateUnPublishAsset(asset)
         const filePathArray = getFileLocation(asset, this.config)
-        const filePath = resolvePath(join.apply(this, filePathArray))
+        const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
         if (existsSync(filePath)) {
           return rimraf(filePath)
             .then(() => resolve(asset))
