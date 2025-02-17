@@ -16,3 +16,5 @@ export const validateUnPublishAsset = (asset) => {
       }
     })
 }
+
+export const sanitizePath = (str) => str?.replace(/^(\.\.(\/|\\|$))+/, '');
