@@ -28,6 +28,7 @@ import {
 import {
   validatePublishAsset,
   validateUnPublishAsset,
+  sanitizePath
 } from './utils'
 
 const debug = Debug('asset-store-filesystem')
@@ -94,8 +95,8 @@ export class FSAssetStore {
               const filePathArray = getFileLocation(asset, this.config)
               const folderPathArray = cloneDeep(filePathArray)
               folderPathArray.splice(folderPathArray.length - 1)
-              const folderPath = resolvePath(join.apply(this, folderPathArray))
-              const filePath = resolvePath(join.apply(this, filePathArray))
+              const folderPath = sanitizePath(resolvePath(join.apply(this, folderPathArray)))
+              const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
 
               if (!existsSync(folderPath)) {
                 mkdirp.sync(folderPath, '0755')
@@ -136,18 +137,14 @@ export class FSAssetStore {
         const folderPathArray = getFileLocation(asset, this.config)
         folderPathArray.splice(folderPathArray.length - 1, 1)
 
-        const folderPath = resolvePath(join.apply(this, folderPathArray))
+        const folderPath = sanitizePath(resolvePath(join.apply(this, folderPathArray)))
         if (existsSync(folderPath)) {
-
-          return rimraf(folderPath, (error) => {
-            if (error) {
-              debug(`Error while removing ${folderPath} asset file`)
-
-              return reject(error)
-            }
-
-            return resolve(asset)
-          })
+          return rimraf(folderPath)
+            .then(() => resolve(asset))
+            .catch((error) => {
+              debug(`Error while removing ${folderPath} asset file`);
+              return reject(error);
+            });
         } else {
           debug(`${folderPath} did not exist!`)
 
@@ -173,17 +170,14 @@ export class FSAssetStore {
       try {
         validateUnPublishAsset(asset)
         const filePathArray = getFileLocation(asset, this.config)
-        const filePath = resolvePath(join.apply(this, filePathArray))
+        const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
         if (existsSync(filePath)) {
-          return rimraf(filePath, (error) => {
-            if (error) {
-              debug(`Error while removing ${filePath} asset file`)
-
-              return reject(error)
-            }
-
-            return resolve(asset)
-          })
+          return rimraf(filePath)
+            .then(() => resolve(asset))
+            .catch((error) => {
+              debug(`Error while removing ${filePath} asset file`);
+              return reject(error);
+            });
         }
         debug(`${filePath} did not exist!`)
 
