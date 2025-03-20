@@ -20,7 +20,7 @@ import {
   resolve as resolvePath,
 } from 'path'
 import request from 'request'
-import rimraf from 'rimraf'
+import { rimraf } from 'rimraf'
 import {
   getAssetLocation,
   getFileLocation,
