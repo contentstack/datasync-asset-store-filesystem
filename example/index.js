@@ -24,7 +24,7 @@ data: {
     tags: [],
     filename: 'Teilchenmodell_Flüssigkeit.png',
     url:
-     'https://images.contentstack.io/v3/assets/bltd1343376dfba54d2/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
+     'https://images.contentstack.io/v3/assets/***REMOVED***/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
     ACL: {},
     is_dir: false,
     _version: 1,
@@ -50,7 +50,7 @@ let asset_data2= {
 		tags: [],
 		filename: 'blog1.jpg',
 		url:
-		 'https://images.contentstack.io/v3/assets/bltd1343376dfba54d2/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
+		 'https://images.contentstack.io/v3/assets/***REMOVED***/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
 		ACL: {},
 		is_dir: false,
 		_version: 1,
@@ -76,7 +76,7 @@ let asset_data3= {
 		tags: [],
 		filename: 'blog3.jpg',
 		url:
-		 'https://images.contentstack.io/v3/assets/bltd1343376dfba54d2/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
+		 'https://images.contentstack.io/v3/assets/***REMOVED***/blt9c4ef3c49f7b18e9/5b28f1cefdee6c3974929dc8/blog2.jpg',
 		ACL: {},
 		is_dir: false,
 		_version: 1,

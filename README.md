@@ -12,7 +12,7 @@ The Asset Store Filesystem is one of the modules on Contentstack DataSync. The S
 
 ## Prerequisite
 
-Node.js 8+
+Node.js 20+
 
 
 ## Usage
