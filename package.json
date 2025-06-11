@@ -28,7 +28,7 @@
     "test": "jest --coverage",
     "tslint": "npx tslint -c tslint.json 'src/**/*.ts' --fix",
     "compile": "tsc",
-    "prepare": "npm run compile",
+    "prepare": "npm run compile && npx husky && chmod +x .husky/pre-commit",
     "pretest": "npm run build-ts && rimraf _contents coverage"
   },
   "repository": {
