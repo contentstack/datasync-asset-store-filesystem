@@ -10,17 +10,17 @@ import {
 import {
   createWriteStream,
   existsSync,
+  mkdirSync
 } from 'fs'
 import {
   cloneDeep,
 } from 'lodash'
-import mkdirp from 'mkdirp'
 import {
   join,
   resolve as resolvePath,
 } from 'path'
 import { request } from 'undici'
-import rimraf from 'rimraf'
+import { rimraf } from 'rimraf'
 import {
   getAssetLocation,
   getFileLocation,
@@ -101,7 +101,7 @@ export class FSAssetStore {
               const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
 
               if (!existsSync(folderPath)) {
-                mkdirp.sync(folderPath, '0755')
+                mkdirSync(folderPath, '0755')
               }
               const localStream = createWriteStream(filePath)
               resp.body.pipe(localStream)
