@@ -101,7 +101,7 @@ export class FSAssetStore {
               const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
 
               if (!existsSync(folderPath)) {
-                mkdirSync(folderPath, '0755')
+                mkdirSync(folderPath, { recursive: true, mode: 0o755 })
               }
               const localStream = createWriteStream(filePath)
               resp.body.pipe(localStream)
