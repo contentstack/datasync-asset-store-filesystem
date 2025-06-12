@@ -1,6 +1,6 @@
 {
   "name": "@contentstack/datasync-asset-store-filesystem",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Fillesystem asset store for DataSync libraries. Stores Contentstack asset-files in filesystem",
   "main": "./dist",
   "types": "./typings",
@@ -29,7 +29,8 @@
     "tslint": "npx tslint -c tslint.json 'src/**/*.ts' --fix",
     "compile": "tsc",
     "prepare": "npm run compile",
-    "pretest": "npm run build-ts && rimraf _contents coverage"
+    "pretest": "npm run build-ts && rimraf _contents coverage",
+    "pre-commit": "npx husky && chmod +x .husky/pre-commit"
   },
   "repository": {
     "type": "git",
@@ -44,9 +45,8 @@
   "dependencies": {
     "debug": "^4.3.4",
     "lodash": "^4.17.15",
-    "mkdirp": "^1.0.4",
-    "request": "^2.88.2",
-    "rimraf": "^4.3.1"
+    "rimraf": "^6.0.1",
+    "undici": "^7.10.0"
   },
   "devDependencies": {
     "@types/jest": "23.3.10",
