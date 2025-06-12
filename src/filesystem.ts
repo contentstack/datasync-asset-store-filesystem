@@ -104,6 +104,9 @@ export class FSAssetStore {
                 mkdirSync(folderPath, { recursive: true, mode: 0o755 })
               }
               const localStream = createWriteStream(filePath)
+              localStream.on('error', (err) => {
+                return reject(err)
+              })
               resp.body.pipe(localStream)
               localStream.on('close', () => {
                 return resolve(asset)
