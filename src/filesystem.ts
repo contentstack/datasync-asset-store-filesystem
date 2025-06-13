@@ -10,17 +10,17 @@ import {
 import {
   createWriteStream,
   existsSync,
+  mkdirSync
 } from 'fs'
 import {
   cloneDeep,
 } from 'lodash'
-import mkdirp from 'mkdirp'
 import {
   join,
   resolve as resolvePath,
 } from 'path'
-import request from 'request'
-import rimraf from 'rimraf'
+import { request } from 'undici'
+import { rimraf } from 'rimraf'
 import {
   getAssetLocation,
   getFileLocation,
@@ -82,14 +82,16 @@ export class FSAssetStore {
       try {
         validatePublishAsset(asset)
 
-        return request.get({
-            url: encodeURI(asset.url),
-          })
-          .on('response', (resp) => {
+        return request(encodeURI(asset.url))
+          .then((resp) => {
             if (resp.statusCode === 200) {
               if (asset.hasOwnProperty('download_id')) {
                 const attachment = resp.headers['content-disposition']
-                asset.filename = decodeURIComponent(attachment.split('=')[1])
+                if (typeof attachment === 'string') {
+                  asset.filename = decodeURIComponent(attachment.split('=')[1])
+                } else if (Array.isArray(attachment) && attachment.length > 0) {
+                  asset.filename = decodeURIComponent(attachment[0].split('=')[1])
+                }
               }
               asset._internal_url = getAssetLocation(asset, this.config)
               const filePathArray = getFileLocation(asset, this.config)
@@ -99,10 +101,13 @@ export class FSAssetStore {
               const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
 
               if (!existsSync(folderPath)) {
-                mkdirp.sync(folderPath, '0755')
+                mkdirSync(folderPath, { recursive: true, mode: 0o755 })
               }
               const localStream = createWriteStream(filePath)
-              resp.pipe(localStream)
+              localStream.on('error', (err) => {
+                return reject(err)
+              })
+              resp.body.pipe(localStream)
               localStream.on('close', () => {
                 return resolve(asset)
               })
@@ -110,8 +115,7 @@ export class FSAssetStore {
               return reject(`Failed to download asset ${JSON.stringify(asset)}`)
             }
           })
-          .on('error', reject)
-          .end()
+          .catch(reject)
       } catch (error) {
         debug(`${asset.uid} asset download failed`)
 
