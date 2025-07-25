@@ -143,13 +143,14 @@ export class FSAssetStore {
 
         const folderPath = sanitizePath(resolvePath(join.apply(this, folderPathArray)))
         if (existsSync(folderPath)) {
-          return rimraf(folderPath)
+          return Promise.resolve()
+            .then(() => rimraf(folderPath))
             .then(() => resolve(asset))
             .catch((error) => {
               debug(`Error while removing ${folderPath} asset file`);
               return reject(error);
             });
-        } else {
+          } else {
           debug(`${folderPath} did not exist!`)
 
           return resolve(asset)
@@ -176,7 +177,8 @@ export class FSAssetStore {
         const filePathArray = getFileLocation(asset, this.config)
         const filePath = sanitizePath(resolvePath(join.apply(this, filePathArray)))
         if (existsSync(filePath)) {
-          return rimraf(filePath)
+          return Promise.resolve()
+            .then(() => rimraf(filePath))
             .then(() => resolve(asset))
             .catch((error) => {
               debug(`Error while removing ${filePath} asset file`);
