@@ -150,7 +150,7 @@ export class FSAssetStore {
               debug(`Error while removing ${folderPath} asset file`);
               return reject(error);
             });
-          } else {
+        } else {
           debug(`${folderPath} did not exist!`)
 
           return resolve(asset)
