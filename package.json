@@ -46,7 +46,7 @@
     "debug": "^4.3.4",
     "lodash": "^4.17.15",
     "rimraf": "^6.0.1",
-    "undici": "^7.10.0"
+    "undici": "^7.13.0"
   },
   "devDependencies": {
     "@types/jest": "23.3.10",
