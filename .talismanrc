@@ -8,4 +8,6 @@ fileignoreconfig:
   checksum: 3563972e6fef958b021444c41ef04f5f32e83d1d51f7faea62ad1633130b6f1a
 - filename: src/messages.ts
   checksum: 5fc01b165e2fec0c969b954b15ab9201eaabcdce766c8b007907377f015f0043
+- filename: typings/messages.d.ts
+  checksum: f79568b5a95311acea1892c644554091c2b38d169a4867380693fa09e2639d95
 version: ""
