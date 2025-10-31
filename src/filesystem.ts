@@ -113,7 +113,7 @@ export class FSAssetStore {
                 return resolve(asset)
               })
             } else {
-              return reject(`Failed to download asset ${JSON.stringify(asset)}`)
+              return reject(messages.errors.assetDownloadFailed(asset))
             }
           })
           .catch(reject)

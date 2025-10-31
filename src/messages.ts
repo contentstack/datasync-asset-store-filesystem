@@ -14,6 +14,8 @@ export const messages = {
       `The key '${key}' does not exist on: ${JSON.stringify(asset)}`,
     contentStoreLoadFailed: () => 
       'Failed to load content store:',
+    assetDownloadFailed: (asset: any) => 
+      `Failed to download asset ${JSON.stringify(asset)}`,
   },
   
   // Info/Debug messages
