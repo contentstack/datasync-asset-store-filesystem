@@ -8,6 +8,7 @@
 const assetConnector = require('../dist')
 const config = require('../dist/config')
 const filesystem = require('fs')
+const { messages } = require('../dist/messages')
 let connector = null
 
 let conf = {
@@ -128,7 +129,8 @@ describe('# asset test', function () {
 	test('# download non existent asset', function () {
 		return connector.download(asset_data2).then(function () {
 		}).catch(error =>{
-			expect(error).toBe('blt9c4ef3c49f7b18h9 Asset download failed')
+			// Verify that download fails with correct error message
+			expect(error).toBe(messages.errors.assetDownloadFailed(asset_data2))
 		})
 	})
 

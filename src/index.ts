@@ -9,6 +9,7 @@ import { compact, merge } from 'lodash'
 import { join } from 'path'
 import { defaultConfig } from './config'
 import { FSAssetStore } from './filesystem'
+import { messages } from './messages'
 
 let assetStoreConfig
 let assetStoreInstance
@@ -45,7 +46,7 @@ export const getAssetLocation = (asset, config) => {
       if (asset[k]) {
         values.push(asset[k])
       } else {
-        throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
+        throw new TypeError(messages.errors.keyNotExist(keys[i], asset))
       }
     } else {
       values.push(keys[i])
@@ -89,7 +90,7 @@ export const getFileLocation = (asset, config) => {
       if (asset[k]) {
         values.push(asset[k])
       } else {
-        throw new TypeError(`The key ${keys[i]} did not exist on ${JSON.stringify(asset)}`)
+        throw new TypeError(messages.errors.keyNotExist(keys[i], asset))
       }
     } else {
       values.push(keys[i])
@@ -132,7 +133,7 @@ export function start(config) {
       assetStoreInstance = new FSAssetStore(assetStoreConfig)
       return resolve(assetStoreInstance)
     } catch (error) {
-      debug('Failed to load content-store due to', error)
+      debug(messages.errors.contentStoreLoadFailed(), error)
       reject(error)
     }
   })
