@@ -30,6 +30,7 @@ import {
   validateUnPublishAsset,
   sanitizePath
 } from './utils'
+import { messages } from './messages'
 
 const debug = Debug('asset-store-filesystem')
 
@@ -76,7 +77,7 @@ export class FSAssetStore {
    * @returns {Promise} returns the asset object, if successful.
    */
   public download(asset) {
-    debug('Asset download invoked ' + JSON.stringify(asset))
+    debug(messages.info.assetDownloadInitiated(asset))
 
     return new Promise((resolve, reject) => {
       try {
@@ -112,12 +113,12 @@ export class FSAssetStore {
                 return resolve(asset)
               })
             } else {
-              return reject(`Failed to download asset ${JSON.stringify(asset)}`)
+              return reject(messages.errors.assetDownloadFailed(asset))
             }
           })
           .catch(reject)
       } catch (error) {
-        debug(`${asset.uid} asset download failed`)
+        debug(messages.info.assetDownloadFailed(asset.uid))
 
         return reject(error)
       }
@@ -132,7 +133,7 @@ export class FSAssetStore {
    * @returns {Promise} returns the asset object, if successful.
    */
   public delete(assets: IAsset[]) {
-    debug('Asset deletion called for', JSON.stringify(assets))
+    debug(messages.info.assetDeletionInitiated(), JSON.stringify(assets))
     const asset = assets[0]
 
     return new Promise((resolve, reject) => {
@@ -147,11 +148,11 @@ export class FSAssetStore {
             .then(() => rimraf(folderPath))
             .then(() => resolve(asset))
             .catch((error) => {
-              debug(`Error while removing ${folderPath} asset file`);
+              debug(messages.info.assetFileRemovalError(folderPath));
               return reject(error);
             });
         } else {
-          debug(`${folderPath} did not exist!`)
+          debug(messages.info.folderPathNotExist(folderPath))
 
           return resolve(asset)
         }
@@ -169,7 +170,7 @@ export class FSAssetStore {
    * @returns {Promise} returns the asset object, if successful.
    */
   public unpublish(asset: IAsset) {
-    debug(`Asset unpublish called ${JSON.stringify(asset)}`)
+    debug(messages.info.assetUnpublishInitiated(asset))
 
     return new Promise((resolve, reject) => {
       try {
@@ -181,11 +182,11 @@ export class FSAssetStore {
             .then(() => rimraf(filePath))
             .then(() => resolve(asset))
             .catch((error) => {
-              debug(`Error while removing ${filePath} asset file`);
+              debug(messages.info.assetFileRemovalError(filePath));
               return reject(error);
             });
         }
-        debug(`${filePath} did not exist!`)
+        debug(messages.info.filePathNotExist(filePath))
 
         return resolve(asset)
       } catch (error) {
