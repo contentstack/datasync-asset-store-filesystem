@@ -44,9 +44,9 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^4.4.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.23",
     "rimraf": "^6.1.2",
-    "undici": "^7.16.0"
+    "undici": "^7.18.2"
   },
   "devDependencies": {
     "@types/jest": "23.3.10",
