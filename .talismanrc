@@ -3,7 +3,7 @@ fileignoreconfig:
   ignore_detectors:
     - filecontent
 - filename: package-lock.json
-  checksum: d9fdb5468441578f45e34485628e505aa6f5d281e0dfcbf2f9a48c6ad775809e
+  checksum: 57fed3bf1735892221f3f53fc8c6d82884cf0cbd6f5345d921371b44dbb82344
 - filename: src/index.ts
   checksum: 3563972e6fef958b021444c41ef04f5f32e83d1d51f7faea62ad1633130b6f1a
 - filename: src/messages.ts
