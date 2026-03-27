@@ -3,11 +3,7 @@ fileignoreconfig:
   ignore_detectors:
     - filecontent
 - filename: package-lock.json
-  checksum: 57fed3bf1735892221f3f53fc8c6d82884cf0cbd6f5345d921371b44dbb82344
-- filename: src/index.ts
-  checksum: 3563972e6fef958b021444c41ef04f5f32e83d1d51f7faea62ad1633130b6f1a
-- filename: src/messages.ts
-  checksum: 5fc01b165e2fec0c969b954b15ab9201eaabcdce766c8b007907377f015f0043
-- filename: typings/messages.d.ts
-  checksum: f79568b5a95311acea1892c644554091c2b38d169a4867380693fa09e2639d95
+  checksum: e571051449f864e40ade3045db82fab11a74887d7ec6f6ad69064a5d28a60d68
+- filename: .github/workflows/check-version-bump.yml
+  checksum: b33b47fae4e126cd9a3489a9324e8b2cf30b38ebdb3dd99e2d453d4bfc0922ad
 version: ""
