@@ -1,0 +1,27 @@
+name: Release datasync asset store filesystem
+on:
+  release:
+    types: [created]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+      - name: Installing dependencies
+        run: npm install
+      - name: Build
+        run: npm run build-ts
+      - name: Publishing datasync asset store filesystem
+        id: publish-to-npm
+        uses: JS-DevTools/npm-publish@v2.2.1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+      - name: github-release
+        id: github-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:  gh release create v${{ steps.publish-to-npm.outputs.version }} --title "Release ${{ steps.publish-to-npm.outputs.version }}" --generate-notes
+
