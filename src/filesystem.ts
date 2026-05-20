@@ -108,7 +108,8 @@ export class FSAssetStore {
               localStream.on('error', (err) => {
                 return reject(err)
               })
-              resp.body.pipe(localStream)
+              // Stream the response body to the file
+              ;(resp.body as any).pipe(localStream)
               localStream.on('close', () => {
                 return resolve(asset)
               })
