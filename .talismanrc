@@ -3,7 +3,7 @@ fileignoreconfig:
   ignore_detectors:
     - filecontent
 - filename: package-lock.json
-  checksum: e571051449f864e40ade3045db82fab11a74887d7ec6f6ad69064a5d28a60d68
+  checksum: a5b9a8c55783591dc1608a885ea8499dc8b85af291aa0b0037d2ff5d74af3cd6
 - filename: .github/workflows/check-version-bump.yml
   checksum: b33b47fae4e126cd9a3489a9324e8b2cf30b38ebdb3dd99e2d453d4bfc0922ad
 version: ""
