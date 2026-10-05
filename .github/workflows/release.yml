@@ -1,27 +1,27 @@
-name: Release datasync asset store filesystem
+name: Publish package to npmjs registry
 on:
   release:
-    types: [created]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22.x"
-      - name: Installing dependencies
-        run: npm install
-      - name: Build
-        run: npm run build-ts
-      - name: Publishing datasync asset store filesystem
-        id: publish-to-npm
-        uses: JS-DevTools/npm-publish@v2.2.1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-      - name: github-release
-        id: github-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run:  gh release create v${{ steps.publish-to-npm.outputs.version }} --title "Release ${{ steps.publish-to-npm.outputs.version }}" --generate-notes
+    types: [published]
 
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build-ts
+      - name: Update npm
+        run: npm install -g npm@latest
+      - name: Release
+        run: npm publish --access public --tag ${{ github.event.release.prerelease && 'beta' || 'latest' }}
