@@ -50,11 +50,11 @@
   },
   "devDependencies": {
     "@types/jest": "23.3.14",
-    "@types/node": "10.12.30",
-    "jest": "^29.0.3",
-    "supertest": "3.3.0",
-    "tslint": "5.18.0",
-    "typescript": "^5.7.3"
+    "@types/node": "10.17.60",
+    "jest": "^29.7.0",
+    "supertest": "3.4.2",
+    "tslint": "5.20.1",
+    "typescript": "^5.9.3"
   },
   "overrides": {
     "brace-expansion": "5.0.12"
